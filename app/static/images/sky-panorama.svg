@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+ <defs>
+  <linearGradient id="sky" x2=".25" y2="1"><stop stop-color="#b9e1f4"/><stop offset=".48" stop-color="#e3f3f7"/><stop offset="1" stop-color="#eff6ed"/></linearGradient>
+  <radialGradient id="sun"><stop stop-color="#fff4d5" stop-opacity=".95"/><stop offset="1" stop-color="#fff4d5" stop-opacity="0"/></radialGradient>
+  <linearGradient id="cloud" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".88"/><stop offset="1" stop-color="#fff" stop-opacity=".08"/></linearGradient>
+  <radialGradient id="haze"><stop stop-color="#f9fcfa" stop-opacity=".8"/><stop offset="1" stop-color="#f9fcfa" stop-opacity="0"/></radialGradient>
+ </defs>
+ <path fill="url(#sky)" d="M0 0h1600v1000H0z"/>
+ <ellipse cx="1230" cy="140" rx="550" ry="450" fill="url(#sun)"/>
+ <g fill="url(#cloud)">
+  <path d="M-180 370c0-65 50-110 114-108 22-97 164-120 217-39 70-35 146 6 153 76 72-11 127 23 136 71Z"/>
+  <path d="M1160 230c4-40 36-65 75-59 14-61 97-82 137-24 52-22 102 3 108 47 59-10 92 4 103 36Z"/>
+  <path d="M1280 630c0-62 47-99 105-92 25-90 136-105 184-32 65-26 131 9 137 65 69-12 118 15 131 59Z"/>
+  <path d="M-120 900c5-55 46-83 97-77 22-75 128-89 166-28 58-24 114 8 120 58 80-18 143 4 164 47Z"/>
+ </g>
+ <ellipse cx="800" cy="530" rx="650" ry="520" fill="url(#haze)"/>
+ <g fill="none" stroke="#90c5c4" stroke-opacity=".2">
+  <path d="M-60 970Q260 670 570 1000M-80 945Q250 630 600 1000M-100 920Q250 590 630 1000"/>
+  <path d="M1400-50q-130 150 200 380M1430-50q-130 150 200 380M1460-50q-130 150 200 380"/>
+ </g>
+</svg>

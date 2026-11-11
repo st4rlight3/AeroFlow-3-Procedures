@@ -1,0 +1,343 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="3320" height="1950" viewBox="0 0 3320 1950" role="img" aria-labelledby="title description">
+<title id="title">AeroFlow — lược đồ quan hệ 17 bảng</title>
+<desc id="description">Ba nhóm: tài khoản và nhật ký 3 bảng; chuyến bay và giá vé 8 bảng; đặt chỗ và thanh toán 6 bảng. Tất cả cột, kiểu dữ liệu, khóa chính và 21 khóa ngoại được lấy từ 02_create_tables.sql. Mũi tên đi từ khóa ngoại đến bảng được tham chiếu.</desc>
+<defs><filter id="shadow" x="-8%" y="-8%" width="120%" height="125%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#294552" flood-opacity="0.07"/></filter><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#547887" stroke-width="1.5"/></marker></defs>
+<style>text{font-family:'Segoe UI',Arial,sans-serif;fill:#17352f}.title{font-size:38px;font-weight:700;letter-spacing:-1px}.subtitle{font-size:20px;fill:#64776f}.group{font-size:21px;font-weight:700;letter-spacing:1px}.table-name{font-size:24px;font-weight:700;fill:white}.column{font-size:18px}.sql-type{font-size:15px;fill:#657a73}.key{font-size:10px;font-weight:700;fill:#337761}.reference{font-size:12px;fill:#356b92}.edge{fill:none;stroke:#7897a1;stroke-width:1.8;marker-end:url(#arrow)}.edge.long{stroke-dasharray:5 6;stroke:#9dabb2}.legend{font-size:17px;fill:#506960}.row-line{stroke:#edf2ee;stroke-width:1}</style>
+<rect width="3320" height="1950" fill="#f5f9f7"/>
+<text x="38" y="68" class="title">AeroFlow · Lược đồ quan hệ</text>
+<text x="38" y="108" class="subtitle">17 bảng · 21 khóa ngoại · Một chiều và khứ hồi · Thời gian chuyến bay lưu bằng UTC</text>
+<text x="2280" y="65" class="legend">PK: khóa chính     FK: khóa ngoại     UQ: duy nhất</text>
+<text x="2280" y="99" class="legend">Mũi tên: FK → bảng cha · Đích tham chiếu ghi dưới từng FK</text>
+<rect x="24" y="155" width="500" height="1630" rx="22" fill="white" stroke="#dce7e1"/>
+<rect x="42" y="176" width="6" height="26" rx="3" fill="#1b7168"/><text x="64" y="198" class="group">TÀI KHOẢN &amp; NHẬT KÝ</text><text x="489" y="198" text-anchor="end" class="subtitle">3 bảng</text>
+<rect x="550" y="155" width="1330" height="1630" rx="22" fill="white" stroke="#dce7e1"/>
+<rect x="568" y="176" width="6" height="26" rx="3" fill="#356b92"/><text x="590" y="198" class="group">CHUYẾN BAY &amp; GIÁ VÉ</text><text x="1845" y="198" text-anchor="end" class="subtitle">8 bảng</text>
+<rect x="1906" y="155" width="1390" height="1630" rx="22" fill="white" stroke="#dce7e1"/>
+<rect x="1924" y="176" width="6" height="26" rx="3" fill="#97642e"/><text x="1946" y="198" class="group">ĐẶT CHỖ &amp; THANH TOÁN</text><text x="3261" y="198" text-anchor="end" class="subtitle">6 bảng</text>
+<path class="edge" d="M274,445 L274,361"><title>Users.RoleID → Roles</title></path>
+<path class="edge" d="M274,1030 L274,785"><title>AuditLogs.ActorID → Users</title></path>
+<path class="edge" d="M875,465 L875,389"><title>Aircraft.AirlineID → Airlines</title></path>
+<path class="edge" d="M875,795 L875,693"><title>AircraftSeats.AircraftID → Aircraft</title></path>
+<path class="edge" d="M875,1335 L875,1135"><title>FlightSeatAssignments.SeatID → AircraftSeats</title></path>
+<path class="edge" d="M1540,670 L1512,615 L1512,529 L1540,529 L1540,501"><title>Flights.OriginID → Airports</title></path>
+<path class="edge" d="M1540,670 L1568,615 L1568,546 L1540,546 L1540,501"><title>Flights.DestinationID → Airports</title></path>
+<path class="edge" d="M1225,790 L1200,790 L1200,515 L1175,515"><title>Flights.AircraftID → Aircraft</title></path>
+<path class="edge" d="M1540,1115 L1540,1008"><title>FlightFares.FlightID → Flights</title></path>
+<path class="edge" d="M1540,1328 L1540,1470"><title>FlightFares.FareClassID → FareClasses</title></path>
+<path class="edge" d="M1175,1427 L1210,1427 L1210,720 L1225,720"><title>FlightSeatAssignments.FlightID → Flights</title></path>
+<path class="edge" d="M2250,670 L2250,486"><title>BookingSegments.BookingID → Bookings</title></path>
+<path class="edge" d="M2620,322 L2570,280"><title>Payments.BookingID → Bookings</title></path>
+<path class="edge" d="M2945,1170 L2945,967"><title>BookingPassengers.PassengerID → Passengers</title></path>
+<path class="edge" d="M2620,1262 L2595,1262 L2595,280 L2570,280"><title>BookingPassengers.BookingID → Bookings</title></path>
+<path class="edge" d="M2250,1090 L2250,883"><title>Tickets.BookingSegmentID → BookingSegments</title></path>
+<path class="edge" d="M2570,1251 L2620,1220"><title>Tickets.BookingPassengerID → BookingPassengers</title></path>
+<path class="edge" d="M1930,803 L1890,803 L1890,720 L1855,720"><title>BookingSegments.FlightID → Flights</title></path>
+<path class="edge" d="M1930,1333 L1880,1333 L1880,1520 L1855,1520"><title>Tickets.FareClassID → FareClasses</title></path>
+<path class="edge long" d="M1930,1182 L1890,1182 L1890,1755 L1190,1755 L1190,1385 L1175,1385"><title>Tickets.AssignmentID → FlightSeatAssignments</title></path>
+<path class="edge long" d="M1930,350 L1870,350 L1870,1770 L535,1770 L535,495 L498,495"><title>Bookings.UserID → Users</title></path>
+<g id="Roles"><rect x="50" y="230" width="448" height="131" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M63 230H485Q498 230 498 243V273H50V243Q50 230 63 230" fill="#1b7168"/><text x="68" y="259" class="table-name">Roles</text>
+<rect x="60" y="279" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="87" y="294" text-anchor="middle" class="key">PK</text>
+<text x="125" y="294" class="column" font-weight="650">RoleID</text><text x="481" y="294" text-anchor="end" class="sql-type">int</text>
+<line x1="64" x2="484" y1="303" y2="303" class="row-line"/>
+<rect x="60" y="307" width="54" height="21" rx="5" fill="#edf3fa"/><text x="87" y="322" text-anchor="middle" class="key">UQ</text>
+<text x="125" y="322" class="column">Name</text><text x="481" y="322" text-anchor="end" class="sql-type">varchar(20)</text>
+<line x1="64" x2="484" y1="331" y2="331" class="row-line"/>
+</g>
+<g id="Users"><rect x="50" y="445" width="448" height="340" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M63 445H485Q498 445 498 458V488H50V458Q50 445 63 445" fill="#1b7168"/><text x="68" y="474" class="table-name">Users</text>
+<rect x="60" y="494" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="87" y="509" text-anchor="middle" class="key">PK</text>
+<text x="125" y="509" class="column" font-weight="650">UserID</text><text x="481" y="509" text-anchor="end" class="sql-type">int</text>
+<line x1="64" x2="484" y1="518" y2="518" class="row-line"/>
+<rect x="60" y="522" width="54" height="21" rx="5" fill="#edf3fa"/><text x="87" y="537" text-anchor="middle" class="key">FK</text>
+<text x="125" y="537" class="column">RoleID</text><text x="481" y="537" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Roles"><text x="125" y="553" class="reference">↗ Roles.RoleID</text></a>
+<line x1="64" x2="484" y1="559" y2="559" class="row-line"/>
+<rect x="60" y="563" width="54" height="21" rx="5" fill="#edf3fa"/><text x="87" y="578" text-anchor="middle" class="key">UQ</text>
+<text x="125" y="578" class="column">Email</text><text x="481" y="578" text-anchor="end" class="sql-type">nvarchar(254)</text>
+<line x1="64" x2="484" y1="587" y2="587" class="row-line"/>
+<text x="125" y="606" class="column">FullName</text><text x="481" y="606" text-anchor="end" class="sql-type">nvarchar(120)</text>
+<line x1="64" x2="484" y1="615" y2="615" class="row-line"/>
+<text x="125" y="634" class="column">PasswordHash</text><text x="481" y="634" text-anchor="end" class="sql-type">varchar(256)</text>
+<line x1="64" x2="484" y1="643" y2="643" class="row-line"/>
+<text x="125" y="662" class="column">Phone</text><text x="481" y="662" text-anchor="end" class="sql-type">varchar(20) NULL</text>
+<line x1="64" x2="484" y1="671" y2="671" class="row-line"/>
+<text x="125" y="690" class="column">IsActive</text><text x="481" y="690" text-anchor="end" class="sql-type">bit</text>
+<line x1="64" x2="484" y1="699" y2="699" class="row-line"/>
+<text x="125" y="718" class="column">SessionVersion</text><text x="481" y="718" text-anchor="end" class="sql-type">int</text>
+<line x1="64" x2="484" y1="727" y2="727" class="row-line"/>
+<text x="125" y="746" class="column">CreatedAt</text><text x="481" y="746" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="64" x2="484" y1="755" y2="755" class="row-line"/>
+</g>
+<g id="Airports"><rect x="1225" y="230" width="630" height="271" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1238 230H1842Q1855 230 1855 243V273H1225V243Q1225 230 1238 230" fill="#356b92"/><text x="1243" y="259" class="table-name">Airports</text>
+<rect x="1235" y="279" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1262" y="294" text-anchor="middle" class="key">PK</text>
+<text x="1300" y="294" class="column" font-weight="650">AirportID</text><text x="1838" y="294" text-anchor="end" class="sql-type">int</text>
+<line x1="1239" x2="1841" y1="303" y2="303" class="row-line"/>
+<rect x="1235" y="307" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1262" y="322" text-anchor="middle" class="key">UQ</text>
+<text x="1300" y="322" class="column">Code</text><text x="1838" y="322" text-anchor="end" class="sql-type">char(3)</text>
+<line x1="1239" x2="1841" y1="331" y2="331" class="row-line"/>
+<text x="1300" y="350" class="column">Name</text><text x="1838" y="350" text-anchor="end" class="sql-type">nvarchar(120)</text>
+<line x1="1239" x2="1841" y1="359" y2="359" class="row-line"/>
+<text x="1300" y="378" class="column">City</text><text x="1838" y="378" text-anchor="end" class="sql-type">nvarchar(80)</text>
+<line x1="1239" x2="1841" y1="387" y2="387" class="row-line"/>
+<text x="1300" y="406" class="column">CountryName</text><text x="1838" y="406" text-anchor="end" class="sql-type">nvarchar(80)</text>
+<line x1="1239" x2="1841" y1="415" y2="415" class="row-line"/>
+<text x="1300" y="434" class="column">IanaTimeZone</text><text x="1838" y="434" text-anchor="end" class="sql-type">nvarchar(64)</text>
+<line x1="1239" x2="1841" y1="443" y2="443" class="row-line"/>
+<text x="1300" y="462" class="column">IsActive</text><text x="1838" y="462" text-anchor="end" class="sql-type">bit</text>
+<line x1="1239" x2="1841" y1="471" y2="471" class="row-line"/>
+</g>
+<g id="Airlines"><rect x="575" y="230" width="600" height="159" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M588 230H1162Q1175 230 1175 243V273H575V243Q575 230 588 230" fill="#356b92"/><text x="593" y="259" class="table-name">Airlines</text>
+<rect x="585" y="279" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="612" y="294" text-anchor="middle" class="key">PK</text>
+<text x="650" y="294" class="column" font-weight="650">AirlineID</text><text x="1158" y="294" text-anchor="end" class="sql-type">int</text>
+<line x1="589" x2="1161" y1="303" y2="303" class="row-line"/>
+<rect x="585" y="307" width="54" height="21" rx="5" fill="#edf3fa"/><text x="612" y="322" text-anchor="middle" class="key">UQ</text>
+<text x="650" y="322" class="column">Code</text><text x="1158" y="322" text-anchor="end" class="sql-type">char(2)</text>
+<line x1="589" x2="1161" y1="331" y2="331" class="row-line"/>
+<text x="650" y="350" class="column">Name</text><text x="1158" y="350" text-anchor="end" class="sql-type">nvarchar(100)</text>
+<line x1="589" x2="1161" y1="359" y2="359" class="row-line"/>
+</g>
+<g id="Aircraft"><rect x="575" y="465" width="600" height="228" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M588 465H1162Q1175 465 1175 478V508H575V478Q575 465 588 465" fill="#356b92"/><text x="593" y="494" class="table-name">Aircraft</text>
+<rect x="585" y="514" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="612" y="529" text-anchor="middle" class="key">PK</text>
+<text x="650" y="529" class="column" font-weight="650">AircraftID</text><text x="1158" y="529" text-anchor="end" class="sql-type">int</text>
+<line x1="589" x2="1161" y1="538" y2="538" class="row-line"/>
+<rect x="585" y="542" width="54" height="21" rx="5" fill="#edf3fa"/><text x="612" y="557" text-anchor="middle" class="key">FK</text>
+<text x="650" y="557" class="column">AirlineID</text><text x="1158" y="557" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Airlines"><text x="650" y="573" class="reference">↗ Airlines.AirlineID</text></a>
+<line x1="589" x2="1161" y1="579" y2="579" class="row-line"/>
+<rect x="585" y="583" width="54" height="21" rx="5" fill="#edf3fa"/><text x="612" y="598" text-anchor="middle" class="key">UQ</text>
+<text x="650" y="598" class="column">Registration</text><text x="1158" y="598" text-anchor="end" class="sql-type">varchar(20)</text>
+<line x1="589" x2="1161" y1="607" y2="607" class="row-line"/>
+<text x="650" y="626" class="column">Model</text><text x="1158" y="626" text-anchor="end" class="sql-type">nvarchar(80)</text>
+<line x1="589" x2="1161" y1="635" y2="635" class="row-line"/>
+<text x="650" y="654" class="column">IsActive</text><text x="1158" y="654" text-anchor="end" class="sql-type">bit</text>
+<line x1="589" x2="1161" y1="663" y2="663" class="row-line"/>
+</g>
+<g id="FareClasses"><rect x="1225" y="1470" width="630" height="243" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1238 1470H1842Q1855 1470 1855 1483V1513H1225V1483Q1225 1470 1238 1470" fill="#356b92"/><text x="1243" y="1499" class="table-name">FareClasses</text>
+<rect x="1235" y="1519" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1262" y="1534" text-anchor="middle" class="key">PK</text>
+<text x="1300" y="1534" class="column" font-weight="650">FareClassID</text><text x="1838" y="1534" text-anchor="end" class="sql-type">int</text>
+<line x1="1239" x2="1841" y1="1543" y2="1543" class="row-line"/>
+<rect x="1235" y="1547" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1262" y="1562" text-anchor="middle" class="key">UQ</text>
+<text x="1300" y="1562" class="column">Code</text><text x="1838" y="1562" text-anchor="end" class="sql-type">varchar(10)</text>
+<line x1="1239" x2="1841" y1="1571" y2="1571" class="row-line"/>
+<text x="1300" y="1590" class="column">Name</text><text x="1838" y="1590" text-anchor="end" class="sql-type">nvarchar(60)</text>
+<line x1="1239" x2="1841" y1="1599" y2="1599" class="row-line"/>
+<text x="1300" y="1618" class="column">Cabin</text><text x="1838" y="1618" text-anchor="end" class="sql-type">varchar(12)</text>
+<line x1="1239" x2="1841" y1="1627" y2="1627" class="row-line"/>
+<text x="1300" y="1646" class="column">BaggageKg</text><text x="1838" y="1646" text-anchor="end" class="sql-type">int</text>
+<line x1="1239" x2="1841" y1="1655" y2="1655" class="row-line"/>
+<text x="1300" y="1674" class="column">RefundPercent</text><text x="1838" y="1674" text-anchor="end" class="sql-type">decimal(5,2)</text>
+<line x1="1239" x2="1841" y1="1683" y2="1683" class="row-line"/>
+</g>
+<g id="AircraftSeats"><rect x="575" y="795" width="600" height="340" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M588 795H1162Q1175 795 1175 808V838H575V808Q575 795 588 795" fill="#356b92"/><text x="593" y="824" class="table-name">AircraftSeats</text>
+<rect x="585" y="844" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="612" y="859" text-anchor="middle" class="key">PK</text>
+<text x="650" y="859" class="column" font-weight="650">SeatID</text><text x="1158" y="859" text-anchor="end" class="sql-type">int</text>
+<line x1="589" x2="1161" y1="868" y2="868" class="row-line"/>
+<rect x="585" y="872" width="54" height="21" rx="5" fill="#edf3fa"/><text x="612" y="887" text-anchor="middle" class="key">FK</text>
+<text x="650" y="887" class="column">AircraftID</text><text x="1158" y="887" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Aircraft"><text x="650" y="903" class="reference">↗ Aircraft.AircraftID</text></a>
+<line x1="589" x2="1161" y1="909" y2="909" class="row-line"/>
+<text x="650" y="928" class="column">SeatNumber</text><text x="1158" y="928" text-anchor="end" class="sql-type">varchar(5)</text>
+<line x1="589" x2="1161" y1="937" y2="937" class="row-line"/>
+<text x="650" y="956" class="column">RowNumber</text><text x="1158" y="956" text-anchor="end" class="sql-type">int</text>
+<line x1="589" x2="1161" y1="965" y2="965" class="row-line"/>
+<text x="650" y="984" class="column">ColumnLetter</text><text x="1158" y="984" text-anchor="end" class="sql-type">char(1)</text>
+<line x1="589" x2="1161" y1="993" y2="993" class="row-line"/>
+<text x="650" y="1012" class="column">Cabin</text><text x="1158" y="1012" text-anchor="end" class="sql-type">varchar(12)</text>
+<line x1="589" x2="1161" y1="1021" y2="1021" class="row-line"/>
+<text x="650" y="1040" class="column">IsActive</text><text x="1158" y="1040" text-anchor="end" class="sql-type">bit</text>
+<line x1="589" x2="1161" y1="1049" y2="1049" class="row-line"/>
+<text x="650" y="1068" class="column">SeatFee</text><text x="1158" y="1068" text-anchor="end" class="sql-type">decimal(14,2)</text>
+<line x1="589" x2="1161" y1="1077" y2="1077" class="row-line"/>
+<text x="650" y="1096" class="column">IsPriority</text><text x="1158" y="1096" text-anchor="end" class="sql-type">bit</text>
+<line x1="589" x2="1161" y1="1105" y2="1105" class="row-line"/>
+</g>
+<g id="Flights"><rect x="1225" y="670" width="630" height="338" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1238 670H1842Q1855 670 1855 683V713H1225V683Q1225 670 1238 670" fill="#356b92"/><text x="1243" y="699" class="table-name">Flights</text>
+<rect x="1235" y="719" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1262" y="734" text-anchor="middle" class="key">PK</text>
+<text x="1300" y="734" class="column" font-weight="650">FlightID</text><text x="1838" y="734" text-anchor="end" class="sql-type">int</text>
+<line x1="1239" x2="1841" y1="743" y2="743" class="row-line"/>
+<text x="1300" y="762" class="column">FlightNumber</text><text x="1838" y="762" text-anchor="end" class="sql-type">varchar(8)</text>
+<line x1="1239" x2="1841" y1="771" y2="771" class="row-line"/>
+<rect x="1235" y="775" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1262" y="790" text-anchor="middle" class="key">FK</text>
+<text x="1300" y="790" class="column">AircraftID</text><text x="1838" y="790" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Aircraft"><text x="1300" y="806" class="reference">↗ Aircraft.AircraftID</text></a>
+<line x1="1239" x2="1841" y1="812" y2="812" class="row-line"/>
+<rect x="1235" y="816" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1262" y="831" text-anchor="middle" class="key">FK</text>
+<text x="1300" y="831" class="column">OriginID</text><text x="1838" y="831" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Airports"><text x="1300" y="847" class="reference">↗ Airports.AirportID</text></a>
+<line x1="1239" x2="1841" y1="853" y2="853" class="row-line"/>
+<rect x="1235" y="857" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1262" y="872" text-anchor="middle" class="key">FK</text>
+<text x="1300" y="872" class="column">DestinationID</text><text x="1838" y="872" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Airports"><text x="1300" y="888" class="reference">↗ Airports.AirportID</text></a>
+<line x1="1239" x2="1841" y1="894" y2="894" class="row-line"/>
+<text x="1300" y="913" class="column">DepartureTime</text><text x="1838" y="913" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="1239" x2="1841" y1="922" y2="922" class="row-line"/>
+<text x="1300" y="941" class="column">ArrivalTime</text><text x="1838" y="941" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="1239" x2="1841" y1="950" y2="950" class="row-line"/>
+<text x="1300" y="969" class="column">Status</text><text x="1838" y="969" text-anchor="end" class="sql-type">varchar(12)</text>
+<line x1="1239" x2="1841" y1="978" y2="978" class="row-line"/>
+</g>
+<g id="FlightFares"><rect x="1225" y="1115" width="630" height="213" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1238 1115H1842Q1855 1115 1855 1128V1158H1225V1128Q1225 1115 1238 1115" fill="#356b92"/><text x="1243" y="1144" class="table-name">FlightFares</text>
+<rect x="1235" y="1164" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1262" y="1179" text-anchor="middle" class="key">PK,FK</text>
+<text x="1300" y="1179" class="column" font-weight="650">FlightID</text><text x="1838" y="1179" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Flights"><text x="1300" y="1195" class="reference">↗ Flights.FlightID</text></a>
+<line x1="1239" x2="1841" y1="1201" y2="1201" class="row-line"/>
+<rect x="1235" y="1205" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1262" y="1220" text-anchor="middle" class="key">PK,FK</text>
+<text x="1300" y="1220" class="column" font-weight="650">FareClassID</text><text x="1838" y="1220" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#FareClasses"><text x="1300" y="1236" class="reference">↗ FareClasses.FareClassID</text></a>
+<line x1="1239" x2="1841" y1="1242" y2="1242" class="row-line"/>
+<text x="1300" y="1261" class="column">BasePrice</text><text x="1838" y="1261" text-anchor="end" class="sql-type">decimal(14,2)</text>
+<line x1="1239" x2="1841" y1="1270" y2="1270" class="row-line"/>
+<text x="1300" y="1289" class="column">TaxRate</text><text x="1838" y="1289" text-anchor="end" class="sql-type">decimal(5,4)</text>
+<line x1="1239" x2="1841" y1="1298" y2="1298" class="row-line"/>
+</g>
+<g id="Passengers"><rect x="2620" y="780" width="650" height="187" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M2633 780H3257Q3270 780 3270 793V823H2620V793Q2620 780 2633 780" fill="#97642e"/><text x="2638" y="809" class="table-name">Passengers</text>
+<rect x="2630" y="829" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="2657" y="844" text-anchor="middle" class="key">PK</text>
+<text x="2695" y="844" class="column" font-weight="650">PassengerID</text><text x="3253" y="844" text-anchor="end" class="sql-type">int</text>
+<line x1="2634" x2="3256" y1="853" y2="853" class="row-line"/>
+<text x="2695" y="872" class="column">FullName</text><text x="3253" y="872" text-anchor="end" class="sql-type">nvarchar(120)</text>
+<line x1="2634" x2="3256" y1="881" y2="881" class="row-line"/>
+<text x="2695" y="900" class="column">DateOfBirth</text><text x="3253" y="900" text-anchor="end" class="sql-type">date</text>
+<line x1="2634" x2="3256" y1="909" y2="909" class="row-line"/>
+<text x="2695" y="928" class="column">DocumentNumber</text><text x="3253" y="928" text-anchor="end" class="sql-type">nvarchar(30)</text>
+<line x1="2634" x2="3256" y1="937" y2="937" class="row-line"/>
+</g>
+<g id="Bookings"><rect x="1930" y="230" width="640" height="256" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1943 230H2557Q2570 230 2570 243V273H1930V243Q1930 230 1943 230" fill="#97642e"/><text x="1948" y="259" class="table-name">Bookings</text>
+<rect x="1940" y="279" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1967" y="294" text-anchor="middle" class="key">PK</text>
+<text x="2005" y="294" class="column" font-weight="650">BookingID</text><text x="2553" y="294" text-anchor="end" class="sql-type">int</text>
+<line x1="1944" x2="2556" y1="303" y2="303" class="row-line"/>
+<rect x="1940" y="307" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="322" text-anchor="middle" class="key">UQ</text>
+<text x="2005" y="322" class="column">PNR</text><text x="2553" y="322" text-anchor="end" class="sql-type">char(8)</text>
+<line x1="1944" x2="2556" y1="331" y2="331" class="row-line"/>
+<rect x="1940" y="335" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="350" text-anchor="middle" class="key">FK</text>
+<text x="2005" y="350" class="column">UserID</text><text x="2553" y="350" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Users"><text x="2005" y="366" class="reference">↗ Users.UserID</text></a>
+<line x1="1944" x2="2556" y1="372" y2="372" class="row-line"/>
+<text x="2005" y="391" class="column">Status</text><text x="2553" y="391" text-anchor="end" class="sql-type">varchar(12)</text>
+<line x1="1944" x2="2556" y1="400" y2="400" class="row-line"/>
+<text x="2005" y="419" class="column">CreatedAt</text><text x="2553" y="419" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="1944" x2="2556" y1="428" y2="428" class="row-line"/>
+<text x="2005" y="447" class="column">ExpiresAt</text><text x="2553" y="447" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="1944" x2="2556" y1="456" y2="456" class="row-line"/>
+</g>
+<g id="BookingSegments"><rect x="1930" y="670" width="640" height="213" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1943 670H2557Q2570 670 2570 683V713H1930V683Q1930 670 1943 670" fill="#97642e"/><text x="1948" y="699" class="table-name">BookingSegments</text>
+<rect x="1940" y="719" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1967" y="734" text-anchor="middle" class="key">PK</text>
+<text x="2005" y="734" class="column" font-weight="650">BookingSegmentID</text><text x="2553" y="734" text-anchor="end" class="sql-type">int</text>
+<line x1="1944" x2="2556" y1="743" y2="743" class="row-line"/>
+<rect x="1940" y="747" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="762" text-anchor="middle" class="key">FK</text>
+<text x="2005" y="762" class="column">BookingID</text><text x="2553" y="762" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Bookings"><text x="2005" y="778" class="reference">↗ Bookings.BookingID</text></a>
+<line x1="1944" x2="2556" y1="784" y2="784" class="row-line"/>
+<rect x="1940" y="788" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="803" text-anchor="middle" class="key">FK</text>
+<text x="2005" y="803" class="column">FlightID</text><text x="2553" y="803" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Flights"><text x="2005" y="819" class="reference">↗ Flights.FlightID</text></a>
+<line x1="1944" x2="2556" y1="825" y2="825" class="row-line"/>
+<text x="2005" y="844" class="column">SegmentOrder</text><text x="2553" y="844" text-anchor="end" class="sql-type">tinyint</text>
+<line x1="1944" x2="2556" y1="853" y2="853" class="row-line"/>
+</g>
+<g id="BookingPassengers"><rect x="2620" y="1170" width="650" height="185" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M2633 1170H3257Q3270 1170 3270 1183V1213H2620V1183Q2620 1170 2633 1170" fill="#97642e"/><text x="2638" y="1199" class="table-name">BookingPassengers</text>
+<rect x="2630" y="1219" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="2657" y="1234" text-anchor="middle" class="key">PK</text>
+<text x="2695" y="1234" class="column" font-weight="650">BookingPassengerID</text><text x="3253" y="1234" text-anchor="end" class="sql-type">int</text>
+<line x1="2634" x2="3256" y1="1243" y2="1243" class="row-line"/>
+<rect x="2630" y="1247" width="54" height="21" rx="5" fill="#edf3fa"/><text x="2657" y="1262" text-anchor="middle" class="key">FK</text>
+<text x="2695" y="1262" class="column">BookingID</text><text x="3253" y="1262" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Bookings"><text x="2695" y="1278" class="reference">↗ Bookings.BookingID</text></a>
+<line x1="2634" x2="3256" y1="1284" y2="1284" class="row-line"/>
+<rect x="2630" y="1288" width="54" height="21" rx="5" fill="#edf3fa"/><text x="2657" y="1303" text-anchor="middle" class="key">FK</text>
+<text x="2695" y="1303" class="column">PassengerID</text><text x="3253" y="1303" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Passengers"><text x="2695" y="1319" class="reference">↗ Passengers.PassengerID</text></a>
+<line x1="2634" x2="3256" y1="1325" y2="1325" class="row-line"/>
+</g>
+<g id="FlightSeatAssignments"><rect x="575" y="1335" width="600" height="213" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M588 1335H1162Q1175 1335 1175 1348V1378H575V1348Q575 1335 588 1335" fill="#356b92"/><text x="593" y="1364" class="table-name">FlightSeatAssignments</text>
+<rect x="585" y="1384" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="612" y="1399" text-anchor="middle" class="key">PK</text>
+<text x="650" y="1399" class="column" font-weight="650">AssignmentID</text><text x="1158" y="1399" text-anchor="end" class="sql-type">int</text>
+<line x1="589" x2="1161" y1="1408" y2="1408" class="row-line"/>
+<rect x="585" y="1412" width="54" height="21" rx="5" fill="#edf3fa"/><text x="612" y="1427" text-anchor="middle" class="key">FK</text>
+<text x="650" y="1427" class="column">FlightID</text><text x="1158" y="1427" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Flights"><text x="650" y="1443" class="reference">↗ Flights.FlightID</text></a>
+<line x1="589" x2="1161" y1="1449" y2="1449" class="row-line"/>
+<rect x="585" y="1453" width="54" height="21" rx="5" fill="#edf3fa"/><text x="612" y="1468" text-anchor="middle" class="key">FK</text>
+<text x="650" y="1468" class="column">SeatID</text><text x="1158" y="1468" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#AircraftSeats"><text x="650" y="1484" class="reference">↗ AircraftSeats.SeatID</text></a>
+<line x1="589" x2="1161" y1="1490" y2="1490" class="row-line"/>
+<text x="650" y="1509" class="column">IsActive</text><text x="1158" y="1509" text-anchor="end" class="sql-type">bit</text>
+<line x1="589" x2="1161" y1="1518" y2="1518" class="row-line"/>
+</g>
+<g id="Tickets"><rect x="1930" y="1090" width="640" height="463" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M1943 1090H2557Q2570 1090 2570 1103V1133H1930V1103Q1930 1090 1943 1090" fill="#97642e"/><text x="1948" y="1119" class="table-name">Tickets</text>
+<rect x="1940" y="1139" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="1967" y="1154" text-anchor="middle" class="key">PK</text>
+<text x="2005" y="1154" class="column" font-weight="650">TicketID</text><text x="2553" y="1154" text-anchor="end" class="sql-type">int</text>
+<line x1="1944" x2="2556" y1="1163" y2="1163" class="row-line"/>
+<rect x="1940" y="1167" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="1182" text-anchor="middle" class="key">FK,UQ</text>
+<text x="2005" y="1182" class="column">AssignmentID</text><text x="2553" y="1182" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#FlightSeatAssignments"><text x="2005" y="1198" class="reference">↗ FlightSeatAssignments.AssignmentID</text></a>
+<line x1="1944" x2="2556" y1="1204" y2="1204" class="row-line"/>
+<rect x="1940" y="1208" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="1223" text-anchor="middle" class="key">UQ</text>
+<text x="2005" y="1223" class="column">TicketNumber</text><text x="2553" y="1223" text-anchor="end" class="sql-type">varchar(20)</text>
+<line x1="1944" x2="2556" y1="1232" y2="1232" class="row-line"/>
+<rect x="1940" y="1236" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="1251" text-anchor="middle" class="key">FK</text>
+<text x="2005" y="1251" class="column">BookingPassengerID</text><text x="2553" y="1251" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#BookingPassengers"><text x="2005" y="1267" class="reference">↗ BookingPassengers.BookingPassengerID</text></a>
+<line x1="1944" x2="2556" y1="1273" y2="1273" class="row-line"/>
+<rect x="1940" y="1277" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="1292" text-anchor="middle" class="key">FK</text>
+<text x="2005" y="1292" class="column">BookingSegmentID</text><text x="2553" y="1292" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#BookingSegments"><text x="2005" y="1308" class="reference">↗ BookingSegments.BookingSegmentID</text></a>
+<line x1="1944" x2="2556" y1="1314" y2="1314" class="row-line"/>
+<rect x="1940" y="1318" width="54" height="21" rx="5" fill="#edf3fa"/><text x="1967" y="1333" text-anchor="middle" class="key">FK</text>
+<text x="2005" y="1333" class="column">FareClassID</text><text x="2553" y="1333" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#FareClasses"><text x="2005" y="1349" class="reference">↗ FareClasses.FareClassID</text></a>
+<line x1="1944" x2="2556" y1="1355" y2="1355" class="row-line"/>
+<text x="2005" y="1374" class="column">BaseFare</text><text x="2553" y="1374" text-anchor="end" class="sql-type">decimal(14,2)</text>
+<line x1="1944" x2="2556" y1="1383" y2="1383" class="row-line"/>
+<text x="2005" y="1402" class="column">TaxAmount</text><text x="2553" y="1402" text-anchor="end" class="sql-type">decimal(14,2)</text>
+<line x1="1944" x2="2556" y1="1411" y2="1411" class="row-line"/>
+<text x="2005" y="1430" class="column">SeatFee</text><text x="2553" y="1430" text-anchor="end" class="sql-type">decimal(14,2)</text>
+<line x1="1944" x2="2556" y1="1439" y2="1439" class="row-line"/>
+<text x="2005" y="1458" class="column">BaggageKg</text><text x="2553" y="1458" text-anchor="end" class="sql-type">int</text>
+<line x1="1944" x2="2556" y1="1467" y2="1467" class="row-line"/>
+<text x="2005" y="1486" class="column">RefundPercent</text><text x="2553" y="1486" text-anchor="end" class="sql-type">decimal(5,2)</text>
+<line x1="1944" x2="2556" y1="1495" y2="1495" class="row-line"/>
+<text x="2005" y="1514" class="column">Status</text><text x="2553" y="1514" text-anchor="end" class="sql-type">varchar(12)</text>
+<line x1="1944" x2="2556" y1="1523" y2="1523" class="row-line"/>
+</g>
+<g id="Payments"><rect x="2620" y="230" width="650" height="284" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M2633 230H3257Q3270 230 3270 243V273H2620V243Q2620 230 2633 230" fill="#97642e"/><text x="2638" y="259" class="table-name">Payments</text>
+<rect x="2630" y="279" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="2657" y="294" text-anchor="middle" class="key">PK</text>
+<text x="2695" y="294" class="column" font-weight="650">PaymentID</text><text x="3253" y="294" text-anchor="end" class="sql-type">int</text>
+<line x1="2634" x2="3256" y1="303" y2="303" class="row-line"/>
+<rect x="2630" y="307" width="54" height="21" rx="5" fill="#edf3fa"/><text x="2657" y="322" text-anchor="middle" class="key">FK</text>
+<text x="2695" y="322" class="column">BookingID</text><text x="3253" y="322" text-anchor="end" class="sql-type">int</text>
+<a xlink:href="#Bookings"><text x="2695" y="338" class="reference">↗ Bookings.BookingID</text></a>
+<line x1="2634" x2="3256" y1="344" y2="344" class="row-line"/>
+<rect x="2630" y="348" width="54" height="21" rx="5" fill="#edf3fa"/><text x="2657" y="363" text-anchor="middle" class="key">UQ</text>
+<text x="2695" y="363" class="column">IdempotencyKey</text><text x="3253" y="363" text-anchor="end" class="sql-type">varchar(80)</text>
+<line x1="2634" x2="3256" y1="372" y2="372" class="row-line"/>
+<text x="2695" y="391" class="column">Amount</text><text x="3253" y="391" text-anchor="end" class="sql-type">decimal(14,2)</text>
+<line x1="2634" x2="3256" y1="400" y2="400" class="row-line"/>
+<text x="2695" y="419" class="column">Kind</text><text x="3253" y="419" text-anchor="end" class="sql-type">varchar(10)</text>
+<line x1="2634" x2="3256" y1="428" y2="428" class="row-line"/>
+<text x="2695" y="447" class="column">Status</text><text x="3253" y="447" text-anchor="end" class="sql-type">varchar(10)</text>
+<line x1="2634" x2="3256" y1="456" y2="456" class="row-line"/>
+<text x="2695" y="475" class="column">CreatedAt</text><text x="3253" y="475" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="2634" x2="3256" y1="484" y2="484" class="row-line"/>
+</g>
+<g id="AuditLogs"><rect x="50" y="1030" width="448" height="284" rx="13" fill="white" stroke="#d7e3db" filter="url(#shadow)"/><path d="M63 1030H485Q498 1030 498 1043V1073H50V1043Q50 1030 63 1030" fill="#1b7168"/><text x="68" y="1059" class="table-name">AuditLogs</text>
+<rect x="60" y="1079" width="54" height="21" rx="5" fill="#ebf6ef"/><text x="87" y="1094" text-anchor="middle" class="key">PK</text>
+<text x="125" y="1094" class="column" font-weight="650">AuditID</text><text x="481" y="1094" text-anchor="end" class="sql-type">bigint</text>
+<line x1="64" x2="484" y1="1103" y2="1103" class="row-line"/>
+<rect x="60" y="1107" width="54" height="21" rx="5" fill="#edf3fa"/><text x="87" y="1122" text-anchor="middle" class="key">FK</text>
+<text x="125" y="1122" class="column">ActorID</text><text x="481" y="1122" text-anchor="end" class="sql-type">int NULL</text>
+<a xlink:href="#Users"><text x="125" y="1138" class="reference">↗ Users.UserID</text></a>
+<line x1="64" x2="484" y1="1144" y2="1144" class="row-line"/>
+<text x="125" y="1163" class="column">Entity</text><text x="481" y="1163" text-anchor="end" class="sql-type">varchar(40)</text>
+<line x1="64" x2="484" y1="1172" y2="1172" class="row-line"/>
+<text x="125" y="1191" class="column">EntityID</text><text x="481" y="1191" text-anchor="end" class="sql-type">int</text>
+<line x1="64" x2="484" y1="1200" y2="1200" class="row-line"/>
+<text x="125" y="1219" class="column">Action</text><text x="481" y="1219" text-anchor="end" class="sql-type">varchar(40)</text>
+<line x1="64" x2="484" y1="1228" y2="1228" class="row-line"/>
+<text x="125" y="1247" class="column">Details</text><text x="481" y="1247" text-anchor="end" class="sql-type">nvarchar(1000) NULL</text>
+<line x1="64" x2="484" y1="1256" y2="1256" class="row-line"/>
+<text x="125" y="1275" class="column">CreatedAt</text><text x="481" y="1275" text-anchor="end" class="sql-type">datetime2(0)</text>
+<line x1="64" x2="484" y1="1284" y2="1284" class="row-line"/>
+</g>
+<rect x="24" y="1810" width="3272" height="110" rx="18" fill="#e8f2ec"/>
+<text x="48" y="1843" class="legend">Một đặt chỗ có 1 chặng (một chiều) hoặc 2 chặng đảo tuyến (khứ hồi); SegmentOrder chỉ nhận 1 hoặc 2.</text>
+<text x="48" y="1874" class="legend">Mỗi hành khách có một vé trên mỗi chặng. Giá và quyền lợi lưu trên Tickets là giá trị tại lúc đặt, không lấy lại giá hiện tại.</text>
+<text x="48" y="1904" class="legend">AuditLogs.ActorID có thể NULL. Cặp FlightID + SeatID chỉ được hoạt động một lần; lịch sử ghế cũ vẫn được giữ.</text>
+</svg>

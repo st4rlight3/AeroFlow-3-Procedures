@@ -1,0 +1,1771 @@
+USE AeroFlow;
+GO
+-- Du lieu mau co dinh. Moi gia tri trong VALUES da duoc ghi san.
+-- Chi nap vao cac bang trong. ID, lich bay, gia ve va lien ket duoc giu nguyen.
+SET NOCOUNT ON;
+SET XACT_ABORT ON;
+BEGIN TRY
+ BEGIN TRAN;
+ IF EXISTS(SELECT 1 FROM dbo.[Roles]) OR
+    EXISTS(SELECT 1 FROM dbo.[Users]) OR
+    EXISTS(SELECT 1 FROM dbo.[Airports]) OR
+    EXISTS(SELECT 1 FROM dbo.[Airlines]) OR
+    EXISTS(SELECT 1 FROM dbo.[Aircraft]) OR
+    EXISTS(SELECT 1 FROM dbo.[FareClasses]) OR
+    EXISTS(SELECT 1 FROM dbo.[AircraftSeats]) OR
+    EXISTS(SELECT 1 FROM dbo.[Flights]) OR
+    EXISTS(SELECT 1 FROM dbo.[FlightFares]) OR
+    EXISTS(SELECT 1 FROM dbo.[Passengers]) OR
+    EXISTS(SELECT 1 FROM dbo.[Bookings]) OR
+    EXISTS(SELECT 1 FROM dbo.[BookingSegments]) OR
+    EXISTS(SELECT 1 FROM dbo.[BookingPassengers]) OR
+    EXISTS(SELECT 1 FROM dbo.[FlightSeatAssignments]) OR
+    EXISTS(SELECT 1 FROM dbo.[Tickets]) OR
+    EXISTS(SELECT 1 FROM dbo.[Payments]) OR
+    EXISTS(SELECT 1 FROM dbo.[AuditLogs])
+  THROW 51000,N'Chi nap du lieu mau vao database trong. Khong co du lieu nao bi ghi de.',1;
+ IF EXISTS(SELECT 1 FROM sys.triggers WHERE parent_id IN (OBJECT_ID('dbo.Bookings'),OBJECT_ID('dbo.Flights'),OBJECT_ID('dbo.Tickets'),OBJECT_ID('dbo.Payments'),OBJECT_ID('dbo.FlightSeatAssignments'),OBJECT_ID('dbo.AircraftSeats')))
+  THROW 51000,N'Hay nap file 04 truoc khi tao trigger bang file 08 trong database moi.',1;
+ -- Nap bang cha truoc bang con. FK, CHECK va UNIQUE van duoc kiem tra.
+
+ -- Roles: 2 dong.
+ SET IDENTITY_INSERT dbo.[Roles] ON;
+ INSERT INTO dbo.[Roles] ([RoleID], [Name]) VALUES
+ (1, 'ADMIN'),
+ (2, 'CUSTOMER');
+ SET IDENTITY_INSERT dbo.[Roles] OFF;
+
+ -- Users: 40 dong.
+ SET IDENTITY_INSERT dbo.[Users] ON;
+ INSERT INTO dbo.[Users] ([UserID], [RoleID], [Email], [FullName], [PasswordHash], [Phone], [IsActive], [SessionVersion], [CreatedAt]) VALUES
+ (1, 2, N'seed001@aeroflow.example', N'Khách mẫu 1', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (2, 2, N'seed002@aeroflow.example', N'Khách mẫu 2', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (3, 2, N'seed003@aeroflow.example', N'Khách mẫu 3', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (4, 2, N'seed004@aeroflow.example', N'Khách mẫu 4', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (5, 2, N'seed005@aeroflow.example', N'Khách mẫu 5', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (6, 2, N'seed006@aeroflow.example', N'Khách mẫu 6', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (7, 2, N'seed007@aeroflow.example', N'Khách mẫu 7', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (8, 2, N'seed008@aeroflow.example', N'Khách mẫu 8', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (9, 2, N'seed009@aeroflow.example', N'Khách mẫu 9', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (10, 2, N'seed010@aeroflow.example', N'Khách mẫu 10', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (11, 2, N'seed011@aeroflow.example', N'Khách mẫu 11', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (12, 2, N'seed012@aeroflow.example', N'Khách mẫu 12', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (13, 2, N'seed013@aeroflow.example', N'Khách mẫu 13', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (14, 2, N'seed014@aeroflow.example', N'Khách mẫu 14', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (15, 2, N'seed015@aeroflow.example', N'Khách mẫu 15', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (16, 2, N'seed016@aeroflow.example', N'Khách mẫu 16', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (17, 2, N'seed017@aeroflow.example', N'Khách mẫu 17', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (18, 2, N'seed018@aeroflow.example', N'Khách mẫu 18', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (19, 2, N'seed019@aeroflow.example', N'Khách mẫu 19', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (20, 2, N'seed020@aeroflow.example', N'Khách mẫu 20', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (21, 2, N'seed021@aeroflow.example', N'Khách mẫu 21', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (22, 2, N'seed022@aeroflow.example', N'Khách mẫu 22', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (23, 2, N'seed023@aeroflow.example', N'Khách mẫu 23', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (24, 2, N'seed024@aeroflow.example', N'Khách mẫu 24', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (25, 2, N'seed025@aeroflow.example', N'Khách mẫu 25', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (26, 2, N'seed026@aeroflow.example', N'Khách mẫu 26', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (27, 2, N'seed027@aeroflow.example', N'Khách mẫu 27', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (28, 2, N'seed028@aeroflow.example', N'Khách mẫu 28', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (29, 2, N'seed029@aeroflow.example', N'Khách mẫu 29', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (30, 2, N'seed030@aeroflow.example', N'Khách mẫu 30', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (31, 2, N'seed031@aeroflow.example', N'Khách mẫu 31', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (32, 2, N'seed032@aeroflow.example', N'Khách mẫu 32', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (33, 2, N'seed033@aeroflow.example', N'Khách mẫu 33', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (34, 2, N'seed034@aeroflow.example', N'Khách mẫu 34', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (35, 2, N'seed035@aeroflow.example', N'Khách mẫu 35', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (36, 2, N'seed036@aeroflow.example', N'Khách mẫu 36', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (37, 2, N'seed037@aeroflow.example', N'Khách mẫu 37', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (38, 2, N'seed038@aeroflow.example', N'Khách mẫu 38', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (39, 2, N'seed039@aeroflow.example', N'Khách mẫu 39', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30'),
+ (40, 2, N'seed040@aeroflow.example', N'Khách mẫu 40', '!disabled-seed-account!', NULL, 0, 1, '2026-10-30T16:57:30');
+ SET IDENTITY_INSERT dbo.[Users] OFF;
+
+ -- Airports: 42 dong.
+ SET IDENTITY_INSERT dbo.[Airports] ON;
+ INSERT INTO dbo.[Airports] ([AirportID], [Code], [Name], [City], [CountryName], [IanaTimeZone], [IsActive]) VALUES
+ (1, 'HAN', N'Nội Bài', N'Hà Nội', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (2, 'SGN', N'Tân Sơn Nhất', N'TP. Hồ Chí Minh', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (3, 'DAD', N'Đà Nẵng', N'Đà Nẵng', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (4, 'CXR', N'Cam Ranh', N'Nha Trang', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (5, 'PQC', N'Phú Quốc', N'Phú Quốc', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (6, 'VCA', N'Cần Thơ', N'Cần Thơ', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (7, 'HUI', N'Phú Bài', N'Huế', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (8, 'DLI', N'Liên Khương', N'Đà Lạt', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (9, 'HPH', N'Cát Bi', N'Hải Phòng', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (10, 'VII', N'Vinh', N'Vinh', N'Việt Nam', N'Asia/Ho_Chi_Minh', 1),
+ (11, 'SIN', N'Sân bay Singapore (SIN)', N'Singapore', N'Singapore', N'Asia/Singapore', 1),
+ (12, 'BKK', N'Sân bay Bangkok (BKK)', N'Bangkok', N'Thái Lan', N'Asia/Bangkok', 1),
+ (13, 'HKT', N'Sân bay Phuket (HKT)', N'Phuket', N'Thái Lan', N'Asia/Bangkok', 1),
+ (14, 'CNX', N'Sân bay Chiang Mai (CNX)', N'Chiang Mai', N'Thái Lan', N'Asia/Bangkok', 1),
+ (15, 'KUL', N'Sân bay Kuala Lumpur (KUL)', N'Kuala Lumpur', N'Malaysia', N'Asia/Kuala_Lumpur', 1),
+ (16, 'PEN', N'Sân bay Penang (PEN)', N'Penang', N'Malaysia', N'Asia/Kuala_Lumpur', 1),
+ (17, 'DPS', N'Sân bay Bali (DPS)', N'Bali', N'Indonesia', N'Asia/Makassar', 1),
+ (18, 'CGK', N'Sân bay Jakarta (CGK)', N'Jakarta', N'Indonesia', N'Asia/Jakarta', 1),
+ (19, 'MNL', N'Sân bay Manila (MNL)', N'Manila', N'Philippines', N'Asia/Manila', 1),
+ (20, 'CEB', N'Sân bay Cebu (CEB)', N'Cebu', N'Philippines', N'Asia/Manila', 1),
+ (21, 'HKG', N'Sân bay Hồng Kông (HKG)', N'Hồng Kông', N'Hồng Kông', N'Asia/Hong_Kong', 1),
+ (22, 'TPE', N'Sân bay Đài Bắc (TPE)', N'Đài Bắc', N'Đài Loan', N'Asia/Taipei', 1),
+ (23, 'ICN', N'Sân bay Seoul (ICN)', N'Seoul', N'Hàn Quốc', N'Asia/Seoul', 1),
+ (24, 'PUS', N'Sân bay Busan (PUS)', N'Busan', N'Hàn Quốc', N'Asia/Seoul', 1),
+ (25, 'NRT', N'Sân bay Tokyo (NRT)', N'Tokyo', N'Nhật Bản', N'Asia/Tokyo', 1),
+ (26, 'KIX', N'Sân bay Osaka (KIX)', N'Osaka', N'Nhật Bản', N'Asia/Tokyo', 1),
+ (27, 'PEK', N'Sân bay Bắc Kinh (PEK)', N'Bắc Kinh', N'Trung Quốc', N'Asia/Shanghai', 1),
+ (28, 'PVG', N'Sân bay Thượng Hải (PVG)', N'Thượng Hải', N'Trung Quốc', N'Asia/Shanghai', 1),
+ (29, 'DEL', N'Sân bay New Delhi (DEL)', N'New Delhi', N'Ấn Độ', N'Asia/Kolkata', 1),
+ (30, 'BOM', N'Sân bay Mumbai (BOM)', N'Mumbai', N'Ấn Độ', N'Asia/Kolkata', 1),
+ (31, 'DXB', N'Sân bay Dubai (DXB)', N'Dubai', N'Các Tiểu vương quốc Ả Rập Thống nhất', N'Asia/Dubai', 1),
+ (32, 'DOH', N'Sân bay Doha (DOH)', N'Doha', N'Qatar', N'Asia/Qatar', 1),
+ (33, 'IST', N'Sân bay Istanbul (IST)', N'Istanbul', N'Thổ Nhĩ Kỳ', N'Europe/Istanbul', 1),
+ (34, 'CDG', N'Sân bay Paris (CDG)', N'Paris', N'Pháp', N'Europe/Paris', 1),
+ (35, 'LHR', N'Sân bay London (LHR)', N'London', N'Vương quốc Anh', N'Europe/London', 1),
+ (36, 'FRA', N'Sân bay Frankfurt (FRA)', N'Frankfurt', N'Đức', N'Europe/Berlin', 1),
+ (37, 'SYD', N'Sân bay Sydney (SYD)', N'Sydney', N'Úc', N'Australia/Sydney', 1),
+ (38, 'MEL', N'Sân bay Melbourne (MEL)', N'Melbourne', N'Úc', N'Australia/Melbourne', 1),
+ (39, 'LAX', N'Sân bay Los Angeles (LAX)', N'Los Angeles', N'Hoa Kỳ', N'America/Los_Angeles', 1),
+ (40, 'SFO', N'Sân bay San Francisco (SFO)', N'San Francisco', N'Hoa Kỳ', N'America/Los_Angeles', 1),
+ (41, 'JFK', N'Sân bay New York (JFK)', N'New York', N'Hoa Kỳ', N'America/New_York', 1),
+ (42, 'YVR', N'Sân bay Vancouver (YVR)', N'Vancouver', N'Canada', N'America/Vancouver', 1);
+ SET IDENTITY_INSERT dbo.[Airports] OFF;
+
+ -- Airlines: 3 dong.
+ SET IDENTITY_INSERT dbo.[Airlines] ON;
+ INSERT INTO dbo.[Airlines] ([AirlineID], [Code], [Name]) VALUES
+ (1, 'AF', N'AeroFlow Air'),
+ (2, 'LS', N'Lotus Sky'),
+ (3, 'BA', N'Blue Arc');
+ SET IDENTITY_INSERT dbo.[Airlines] OFF;
+
+ -- Aircraft: 79 dong.
+ SET IDENTITY_INSERT dbo.[Aircraft] ON;
+ INSERT INTO dbo.[Aircraft] ([AircraftID], [AirlineID], [Registration], [Model], [IsActive]) VALUES
+ (1, 1, 'VN-AF1', N'AF-60 • 60 ghế', 1),
+ (2, 1, 'VN-AF2', N'AF-72 • 72 ghế', 1),
+ (3, 2, 'VN-AF3', N'AF-60 • 60 ghế', 1),
+ (4, 2, 'VN-AF4', N'AF-72 • 72 ghế', 1),
+ (5, 3, 'VN-AF5', N'AF-60 • 60 ghế', 1),
+ (6, 3, 'VN-AF6', N'AF-72 • 72 ghế', 1),
+ (7, 1, 'DEMO-AF-DAD', N'AeroFlow demo 150 • 4 khoang', 1),
+ (8, 1, 'DEMO-AF-HAN', N'AeroFlow demo 150 • 4 khoang', 1),
+ (9, 1, 'DEMO-AF-SGN', N'AeroFlow demo 150 • 4 khoang', 1),
+ (10, 3, 'DEMO-BA-DAD', N'AeroFlow demo 150 • 4 khoang', 1),
+ (11, 3, 'DEMO-BA-HAN', N'AeroFlow demo 150 • 4 khoang', 1),
+ (12, 3, 'DEMO-BA-SGN', N'AeroFlow demo 150 • 4 khoang', 1),
+ (13, 2, 'DEMO-INT-HAN-BKK', N'AeroFlow demo long range 150', 1),
+ (14, 2, 'DEMO-INT-HAN-BOM', N'AeroFlow demo long range 150', 1),
+ (15, 3, 'DEMO-INT-HAN-CDG', N'AeroFlow demo long range 150', 1),
+ (16, 1, 'DEMO-INT-HAN-CEB', N'AeroFlow demo long range 150', 1),
+ (17, 2, 'DEMO-INT-HAN-CGK', N'AeroFlow demo long range 150', 1),
+ (18, 1, 'DEMO-INT-HAN-CNX', N'AeroFlow demo long range 150', 1),
+ (19, 1, 'DEMO-INT-HAN-DEL', N'AeroFlow demo long range 150', 1),
+ (20, 1, 'DEMO-INT-HAN-DOH', N'AeroFlow demo long range 150', 1),
+ (21, 1, 'DEMO-INT-HAN-DPS', N'AeroFlow demo long range 150', 1),
+ (22, 3, 'DEMO-INT-HAN-DXB', N'AeroFlow demo long range 150', 1),
+ (23, 2, 'DEMO-INT-HAN-FRA', N'AeroFlow demo long range 150', 1),
+ (24, 2, 'DEMO-INT-HAN-HKG', N'AeroFlow demo long range 150', 1),
+ (25, 3, 'DEMO-INT-HAN-HKT', N'AeroFlow demo long range 150', 1),
+ (26, 1, 'DEMO-INT-HAN-ICN', N'AeroFlow demo long range 150', 1),
+ (27, 2, 'DEMO-INT-HAN-IST', N'AeroFlow demo long range 150', 1),
+ (28, 1, 'DEMO-INT-HAN-JFK', N'AeroFlow demo long range 150', 1),
+ (29, 1, 'DEMO-INT-HAN-KIX', N'AeroFlow demo long range 150', 1),
+ (30, 2, 'DEMO-INT-HAN-KUL', N'AeroFlow demo long range 150', 1),
+ (31, 2, 'DEMO-INT-HAN-LAX', N'AeroFlow demo long range 150', 1),
+ (32, 1, 'DEMO-INT-HAN-LHR', N'AeroFlow demo long range 150', 1),
+ (33, 1, 'DEMO-INT-HAN-MEL', N'AeroFlow demo long range 150', 1),
+ (34, 3, 'DEMO-INT-HAN-MNL', N'AeroFlow demo long range 150', 1),
+ (35, 3, 'DEMO-INT-HAN-NRT', N'AeroFlow demo long range 150', 1),
+ (36, 2, 'DEMO-INT-HAN-PEK', N'AeroFlow demo long range 150', 1),
+ (37, 3, 'DEMO-INT-HAN-PEN', N'AeroFlow demo long range 150', 1),
+ (38, 2, 'DEMO-INT-HAN-PUS', N'AeroFlow demo long range 150', 1),
+ (39, 3, 'DEMO-INT-HAN-PVG', N'AeroFlow demo long range 150', 1),
+ (40, 3, 'DEMO-INT-HAN-SFO', N'AeroFlow demo long range 150', 1),
+ (41, 1, 'DEMO-INT-HAN-SIN', N'AeroFlow demo long range 150', 1),
+ (42, 3, 'DEMO-INT-HAN-SYD', N'AeroFlow demo long range 150', 1),
+ (43, 3, 'DEMO-INT-HAN-TPE', N'AeroFlow demo long range 150', 1),
+ (44, 2, 'DEMO-INT-HAN-YVR', N'AeroFlow demo long range 150', 1),
+ (45, 2, 'DEMO-INT-SGN-BKK', N'AeroFlow demo long range 150', 1),
+ (46, 2, 'DEMO-INT-SGN-BOM', N'AeroFlow demo long range 150', 1),
+ (47, 3, 'DEMO-INT-SGN-CDG', N'AeroFlow demo long range 150', 1),
+ (48, 1, 'DEMO-INT-SGN-CEB', N'AeroFlow demo long range 150', 1),
+ (49, 2, 'DEMO-INT-SGN-CGK', N'AeroFlow demo long range 150', 1),
+ (50, 1, 'DEMO-INT-SGN-CNX', N'AeroFlow demo long range 150', 1),
+ (51, 1, 'DEMO-INT-SGN-DEL', N'AeroFlow demo long range 150', 1),
+ (52, 1, 'DEMO-INT-SGN-DOH', N'AeroFlow demo long range 150', 1),
+ (53, 1, 'DEMO-INT-SGN-DPS', N'AeroFlow demo long range 150', 1),
+ (54, 3, 'DEMO-INT-SGN-DXB', N'AeroFlow demo long range 150', 1),
+ (55, 2, 'DEMO-INT-SGN-FRA', N'AeroFlow demo long range 150', 1),
+ (56, 2, 'DEMO-INT-SGN-HKG', N'AeroFlow demo long range 150', 1),
+ (57, 3, 'DEMO-INT-SGN-HKT', N'AeroFlow demo long range 150', 1),
+ (58, 1, 'DEMO-INT-SGN-ICN', N'AeroFlow demo long range 150', 1),
+ (59, 2, 'DEMO-INT-SGN-IST', N'AeroFlow demo long range 150', 1),
+ (60, 1, 'DEMO-INT-SGN-JFK', N'AeroFlow demo long range 150', 1),
+ (61, 1, 'DEMO-INT-SGN-KIX', N'AeroFlow demo long range 150', 1),
+ (62, 2, 'DEMO-INT-SGN-KUL', N'AeroFlow demo long range 150', 1),
+ (63, 2, 'DEMO-INT-SGN-LAX', N'AeroFlow demo long range 150', 1),
+ (64, 1, 'DEMO-INT-SGN-LHR', N'AeroFlow demo long range 150', 1),
+ (65, 1, 'DEMO-INT-SGN-MEL', N'AeroFlow demo long range 150', 1),
+ (66, 3, 'DEMO-INT-SGN-MNL', N'AeroFlow demo long range 150', 1),
+ (67, 3, 'DEMO-INT-SGN-NRT', N'AeroFlow demo long range 150', 1),
+ (68, 2, 'DEMO-INT-SGN-PEK', N'AeroFlow demo long range 150', 1),
+ (69, 3, 'DEMO-INT-SGN-PEN', N'AeroFlow demo long range 150', 1),
+ (70, 2, 'DEMO-INT-SGN-PUS', N'AeroFlow demo long range 150', 1),
+ (71, 3, 'DEMO-INT-SGN-PVG', N'AeroFlow demo long range 150', 1),
+ (72, 3, 'DEMO-INT-SGN-SFO', N'AeroFlow demo long range 150', 1),
+ (73, 1, 'DEMO-INT-SGN-SIN', N'AeroFlow demo long range 150', 1),
+ (74, 3, 'DEMO-INT-SGN-SYD', N'AeroFlow demo long range 150', 1),
+ (75, 3, 'DEMO-INT-SGN-TPE', N'AeroFlow demo long range 150', 1),
+ (76, 2, 'DEMO-INT-SGN-YVR', N'AeroFlow demo long range 150', 1),
+ (77, 2, 'DEMO-LS-DAD', N'AeroFlow demo 150 • 4 khoang', 1),
+ (78, 2, 'DEMO-LS-HAN', N'AeroFlow demo 150 • 4 khoang', 1),
+ (79, 2, 'DEMO-LS-SGN', N'AeroFlow demo 150 • 4 khoang', 1);
+ SET IDENTITY_INSERT dbo.[Aircraft] OFF;
+
+ -- FareClasses: 15 dong.
+ SET IDENTITY_INSERT dbo.[FareClasses] ON;
+ INSERT INTO dbo.[FareClasses] ([FareClassID], [Code], [Name], [Cabin], [BaggageKg], [RefundPercent]) VALUES
+ (1, 'ECO', N'Phổ thông tiết kiệm', 'ECONOMY', 7, 0.00),
+ (2, 'FLEX', N'Phổ thông linh hoạt', 'ECONOMY', 20, 80.00),
+ (3, 'BIZ', N'Thương gia', 'BUSINESS', 30, 90.00),
+ (4, 'UEB', N'Phổ thông Tiết kiệm', 'ECONOMY', 0, 0.00),
+ (5, 'UES', N'Phổ thông Tiêu chuẩn', 'ECONOMY', 20, 50.00),
+ (6, 'UEF', N'Phổ thông Linh hoạt', 'ECONOMY', 30, 90.00),
+ (7, 'UPB', N'Phổ thông đặc biệt Tiết kiệm', 'PREMIUM', 0, 0.00),
+ (8, 'UPS', N'Phổ thông đặc biệt Tiêu chuẩn', 'PREMIUM', 20, 50.00),
+ (9, 'UPF', N'Phổ thông đặc biệt Linh hoạt', 'PREMIUM', 30, 90.00),
+ (10, 'UBB', N'Thương gia Tiết kiệm', 'BUSINESS', 0, 0.00),
+ (11, 'UBS', N'Thương gia Tiêu chuẩn', 'BUSINESS', 20, 50.00),
+ (12, 'UBF', N'Thương gia Linh hoạt', 'BUSINESS', 30, 90.00),
+ (13, 'UFB', N'Hạng nhất Tiết kiệm', 'FIRST', 0, 0.00),
+ (14, 'UFS', N'Hạng nhất Tiêu chuẩn', 'FIRST', 20, 50.00),
+ (15, 'UFF', N'Hạng nhất Linh hoạt', 'FIRST', 30, 90.00);
+ SET IDENTITY_INSERT dbo.[FareClasses] OFF;
+
+ -- AircraftSeats: 420 dong.
+ SET IDENTITY_INSERT dbo.[AircraftSeats] ON;
+ INSERT INTO dbo.[AircraftSeats] ([SeatID], [AircraftID], [SeatNumber], [RowNumber], [ColumnLetter], [Cabin], [IsActive], [SeatFee], [IsPriority]) VALUES
+ (1, 1, 'A1', 1, 'A', 'BUSINESS', 1, 0.00, 0),
+ (2, 1, 'B1', 1, 'B', 'BUSINESS', 1, 0.00, 0),
+ (3, 1, 'C1', 1, 'C', 'BUSINESS', 1, 0.00, 0),
+ (4, 1, 'D1', 1, 'D', 'BUSINESS', 1, 0.00, 0),
+ (5, 1, 'E1', 1, 'E', 'BUSINESS', 1, 0.00, 0),
+ (6, 1, 'F1', 1, 'F', 'BUSINESS', 1, 0.00, 0),
+ (7, 1, 'A2', 2, 'A', 'BUSINESS', 1, 0.00, 0),
+ (8, 1, 'B2', 2, 'B', 'BUSINESS', 1, 0.00, 0),
+ (9, 1, 'C2', 2, 'C', 'BUSINESS', 1, 0.00, 0),
+ (10, 1, 'D2', 2, 'D', 'BUSINESS', 1, 0.00, 0),
+ (11, 1, 'E2', 2, 'E', 'BUSINESS', 1, 0.00, 0),
+ (12, 1, 'F2', 2, 'F', 'BUSINESS', 1, 0.00, 0),
+ (13, 1, 'A3', 3, 'A', 'ECONOMY', 1, 0.00, 0),
+ (14, 1, 'B3', 3, 'B', 'ECONOMY', 1, 0.00, 0),
+ (15, 1, 'C3', 3, 'C', 'ECONOMY', 1, 0.00, 0),
+ (16, 1, 'D3', 3, 'D', 'ECONOMY', 1, 0.00, 0),
+ (17, 1, 'E3', 3, 'E', 'ECONOMY', 1, 0.00, 0),
+ (18, 1, 'F3', 3, 'F', 'ECONOMY', 1, 0.00, 0),
+ (19, 1, 'A4', 4, 'A', 'ECONOMY', 1, 0.00, 0),
+ (20, 1, 'B4', 4, 'B', 'ECONOMY', 1, 0.00, 0),
+ (21, 1, 'C4', 4, 'C', 'ECONOMY', 1, 0.00, 0),
+ (22, 1, 'D4', 4, 'D', 'ECONOMY', 1, 0.00, 0),
+ (23, 1, 'E4', 4, 'E', 'ECONOMY', 1, 0.00, 0),
+ (24, 1, 'F4', 4, 'F', 'ECONOMY', 1, 0.00, 0),
+ (25, 1, 'A5', 5, 'A', 'ECONOMY', 1, 0.00, 0),
+ (26, 1, 'B5', 5, 'B', 'ECONOMY', 1, 0.00, 0),
+ (27, 1, 'C5', 5, 'C', 'ECONOMY', 1, 0.00, 0),
+ (28, 1, 'D5', 5, 'D', 'ECONOMY', 1, 0.00, 0),
+ (29, 1, 'E5', 5, 'E', 'ECONOMY', 1, 0.00, 0),
+ (30, 1, 'F5', 5, 'F', 'ECONOMY', 1, 0.00, 0),
+ (31, 1, 'A6', 6, 'A', 'ECONOMY', 1, 0.00, 0),
+ (32, 1, 'B6', 6, 'B', 'ECONOMY', 1, 0.00, 0),
+ (33, 1, 'C6', 6, 'C', 'ECONOMY', 1, 0.00, 0),
+ (34, 1, 'D6', 6, 'D', 'ECONOMY', 1, 0.00, 0),
+ (35, 1, 'E6', 6, 'E', 'ECONOMY', 1, 0.00, 0),
+ (36, 1, 'F6', 6, 'F', 'ECONOMY', 1, 0.00, 0),
+ (37, 1, 'A7', 7, 'A', 'ECONOMY', 1, 0.00, 0),
+ (38, 1, 'B7', 7, 'B', 'ECONOMY', 1, 0.00, 0),
+ (39, 1, 'C7', 7, 'C', 'ECONOMY', 1, 0.00, 0),
+ (40, 1, 'D7', 7, 'D', 'ECONOMY', 1, 0.00, 0),
+ (41, 1, 'E7', 7, 'E', 'ECONOMY', 1, 0.00, 0),
+ (42, 1, 'F7', 7, 'F', 'ECONOMY', 1, 0.00, 0),
+ (43, 1, 'A8', 8, 'A', 'ECONOMY', 1, 0.00, 0),
+ (44, 1, 'B8', 8, 'B', 'ECONOMY', 1, 0.00, 0),
+ (45, 1, 'C8', 8, 'C', 'ECONOMY', 1, 0.00, 0),
+ (46, 1, 'D8', 8, 'D', 'ECONOMY', 1, 0.00, 0),
+ (47, 1, 'E8', 8, 'E', 'ECONOMY', 1, 0.00, 0),
+ (48, 1, 'F8', 8, 'F', 'ECONOMY', 1, 0.00, 0),
+ (49, 1, 'A9', 9, 'A', 'ECONOMY', 1, 0.00, 0),
+ (50, 1, 'B9', 9, 'B', 'ECONOMY', 1, 0.00, 0),
+ (51, 1, 'C9', 9, 'C', 'ECONOMY', 1, 0.00, 0),
+ (52, 1, 'D9', 9, 'D', 'ECONOMY', 1, 0.00, 0),
+ (53, 1, 'E9', 9, 'E', 'ECONOMY', 1, 0.00, 0),
+ (54, 1, 'F9', 9, 'F', 'ECONOMY', 1, 0.00, 0),
+ (55, 1, 'A10', 10, 'A', 'ECONOMY', 1, 0.00, 0),
+ (56, 1, 'B10', 10, 'B', 'ECONOMY', 1, 0.00, 0),
+ (57, 1, 'C10', 10, 'C', 'ECONOMY', 1, 0.00, 0),
+ (58, 1, 'D10', 10, 'D', 'ECONOMY', 1, 0.00, 0),
+ (59, 1, 'E10', 10, 'E', 'ECONOMY', 1, 0.00, 0),
+ (60, 1, 'F10', 10, 'F', 'ECONOMY', 1, 0.00, 0),
+ (133, 3, 'A1', 1, 'A', 'BUSINESS', 1, 0.00, 0),
+ (134, 3, 'B1', 1, 'B', 'BUSINESS', 1, 0.00, 0),
+ (135, 3, 'C1', 1, 'C', 'BUSINESS', 1, 0.00, 0),
+ (136, 3, 'D1', 1, 'D', 'BUSINESS', 1, 0.00, 0),
+ (137, 3, 'E1', 1, 'E', 'BUSINESS', 1, 0.00, 0),
+ (138, 3, 'F1', 1, 'F', 'BUSINESS', 1, 0.00, 0),
+ (139, 3, 'A2', 2, 'A', 'BUSINESS', 1, 0.00, 0),
+ (140, 3, 'B2', 2, 'B', 'BUSINESS', 1, 0.00, 0),
+ (141, 3, 'C2', 2, 'C', 'BUSINESS', 1, 0.00, 0),
+ (142, 3, 'D2', 2, 'D', 'BUSINESS', 1, 0.00, 0),
+ (143, 3, 'E2', 2, 'E', 'BUSINESS', 1, 0.00, 0),
+ (144, 3, 'F2', 2, 'F', 'BUSINESS', 1, 0.00, 0),
+ (145, 3, 'A3', 3, 'A', 'ECONOMY', 1, 0.00, 0),
+ (146, 3, 'B3', 3, 'B', 'ECONOMY', 1, 0.00, 0),
+ (147, 3, 'C3', 3, 'C', 'ECONOMY', 1, 0.00, 0),
+ (148, 3, 'D3', 3, 'D', 'ECONOMY', 1, 0.00, 0),
+ (149, 3, 'E3', 3, 'E', 'ECONOMY', 1, 0.00, 0),
+ (150, 3, 'F3', 3, 'F', 'ECONOMY', 1, 0.00, 0),
+ (151, 3, 'A4', 4, 'A', 'ECONOMY', 1, 0.00, 0),
+ (152, 3, 'B4', 4, 'B', 'ECONOMY', 1, 0.00, 0),
+ (153, 3, 'C4', 4, 'C', 'ECONOMY', 1, 0.00, 0),
+ (154, 3, 'D4', 4, 'D', 'ECONOMY', 1, 0.00, 0),
+ (155, 3, 'E4', 4, 'E', 'ECONOMY', 1, 0.00, 0),
+ (156, 3, 'F4', 4, 'F', 'ECONOMY', 1, 0.00, 0),
+ (157, 3, 'A5', 5, 'A', 'ECONOMY', 1, 0.00, 0),
+ (158, 3, 'B5', 5, 'B', 'ECONOMY', 1, 0.00, 0),
+ (159, 3, 'C5', 5, 'C', 'ECONOMY', 1, 0.00, 0),
+ (160, 3, 'D5', 5, 'D', 'ECONOMY', 1, 0.00, 0),
+ (161, 3, 'E5', 5, 'E', 'ECONOMY', 1, 0.00, 0),
+ (162, 3, 'F5', 5, 'F', 'ECONOMY', 1, 0.00, 0),
+ (163, 3, 'A6', 6, 'A', 'ECONOMY', 1, 0.00, 0),
+ (164, 3, 'B6', 6, 'B', 'ECONOMY', 1, 0.00, 0),
+ (165, 3, 'C6', 6, 'C', 'ECONOMY', 1, 0.00, 0),
+ (166, 3, 'D6', 6, 'D', 'ECONOMY', 1, 0.00, 0),
+ (167, 3, 'E6', 6, 'E', 'ECONOMY', 1, 0.00, 0),
+ (168, 3, 'F6', 6, 'F', 'ECONOMY', 1, 0.00, 0),
+ (169, 3, 'A7', 7, 'A', 'ECONOMY', 1, 0.00, 0),
+ (170, 3, 'B7', 7, 'B', 'ECONOMY', 1, 0.00, 0),
+ (171, 3, 'C7', 7, 'C', 'ECONOMY', 1, 0.00, 0),
+ (172, 3, 'D7', 7, 'D', 'ECONOMY', 1, 0.00, 0),
+ (173, 3, 'E7', 7, 'E', 'ECONOMY', 1, 0.00, 0),
+ (174, 3, 'F7', 7, 'F', 'ECONOMY', 1, 0.00, 0),
+ (175, 3, 'A8', 8, 'A', 'ECONOMY', 1, 0.00, 0),
+ (176, 3, 'B8', 8, 'B', 'ECONOMY', 1, 0.00, 0),
+ (177, 3, 'C8', 8, 'C', 'ECONOMY', 1, 0.00, 0),
+ (178, 3, 'D8', 8, 'D', 'ECONOMY', 1, 0.00, 0),
+ (179, 3, 'E8', 8, 'E', 'ECONOMY', 1, 0.00, 0),
+ (180, 3, 'F8', 8, 'F', 'ECONOMY', 1, 0.00, 0),
+ (181, 3, 'A9', 9, 'A', 'ECONOMY', 1, 0.00, 0),
+ (182, 3, 'B9', 9, 'B', 'ECONOMY', 1, 0.00, 0),
+ (183, 3, 'C9', 9, 'C', 'ECONOMY', 1, 0.00, 0),
+ (184, 3, 'D9', 9, 'D', 'ECONOMY', 1, 0.00, 0),
+ (185, 3, 'E9', 9, 'E', 'ECONOMY', 1, 0.00, 0),
+ (186, 3, 'F9', 9, 'F', 'ECONOMY', 1, 0.00, 0),
+ (187, 3, 'A10', 10, 'A', 'ECONOMY', 1, 0.00, 0),
+ (188, 3, 'B10', 10, 'B', 'ECONOMY', 1, 0.00, 0),
+ (189, 3, 'C10', 10, 'C', 'ECONOMY', 1, 0.00, 0),
+ (190, 3, 'D10', 10, 'D', 'ECONOMY', 1, 0.00, 0),
+ (191, 3, 'E10', 10, 'E', 'ECONOMY', 1, 0.00, 0),
+ (192, 3, 'F10', 10, 'F', 'ECONOMY', 1, 0.00, 0);
+ INSERT INTO dbo.[AircraftSeats] ([SeatID], [AircraftID], [SeatNumber], [RowNumber], [ColumnLetter], [Cabin], [IsActive], [SeatFee], [IsPriority]) VALUES
+ (4597, 35, 'A1', 1, 'A', 'FIRST', 1, 0.00, 0),
+ (4598, 35, 'B1', 1, 'B', 'FIRST', 1, 0.00, 0),
+ (4599, 35, 'E1', 1, 'E', 'FIRST', 1, 0.00, 0),
+ (4600, 35, 'F1', 1, 'F', 'FIRST', 1, 0.00, 0),
+ (4601, 35, 'A2', 2, 'A', 'BUSINESS', 1, 0.00, 0),
+ (4602, 35, 'B2', 2, 'B', 'BUSINESS', 1, 0.00, 0),
+ (4603, 35, 'E2', 2, 'E', 'BUSINESS', 1, 0.00, 0),
+ (4604, 35, 'F2', 2, 'F', 'BUSINESS', 1, 0.00, 0),
+ (4605, 35, 'A3', 3, 'A', 'BUSINESS', 1, 0.00, 0),
+ (4606, 35, 'B3', 3, 'B', 'BUSINESS', 1, 0.00, 0),
+ (4607, 35, 'E3', 3, 'E', 'BUSINESS', 1, 0.00, 0),
+ (4608, 35, 'F3', 3, 'F', 'BUSINESS', 1, 0.00, 0),
+ (4609, 35, 'A4', 4, 'A', 'PREMIUM', 1, 0.00, 0),
+ (4610, 35, 'B4', 4, 'B', 'PREMIUM', 1, 0.00, 0),
+ (4611, 35, 'C4', 4, 'C', 'PREMIUM', 1, 0.00, 0),
+ (4612, 35, 'D4', 4, 'D', 'PREMIUM', 1, 0.00, 0),
+ (4613, 35, 'E4', 4, 'E', 'PREMIUM', 1, 0.00, 0),
+ (4614, 35, 'F4', 4, 'F', 'PREMIUM', 1, 0.00, 0),
+ (4615, 35, 'A5', 5, 'A', 'PREMIUM', 1, 0.00, 0),
+ (4616, 35, 'B5', 5, 'B', 'PREMIUM', 1, 0.00, 0),
+ (4617, 35, 'C5', 5, 'C', 'PREMIUM', 1, 0.00, 0),
+ (4618, 35, 'D5', 5, 'D', 'PREMIUM', 1, 0.00, 0),
+ (4619, 35, 'E5', 5, 'E', 'PREMIUM', 1, 0.00, 0),
+ (4620, 35, 'F5', 5, 'F', 'PREMIUM', 1, 0.00, 0),
+ (4621, 35, 'A6', 6, 'A', 'PREMIUM', 1, 0.00, 0),
+ (4622, 35, 'B6', 6, 'B', 'PREMIUM', 1, 0.00, 0),
+ (4623, 35, 'C6', 6, 'C', 'PREMIUM', 1, 0.00, 0),
+ (4624, 35, 'D6', 6, 'D', 'PREMIUM', 1, 0.00, 0),
+ (4625, 35, 'E6', 6, 'E', 'PREMIUM', 1, 0.00, 0),
+ (4626, 35, 'F6', 6, 'F', 'PREMIUM', 1, 0.00, 0),
+ (4627, 35, 'A7', 7, 'A', 'ECONOMY', 1, 80000.00, 1),
+ (4628, 35, 'B7', 7, 'B', 'ECONOMY', 1, 80000.00, 1),
+ (4629, 35, 'C7', 7, 'C', 'ECONOMY', 1, 80000.00, 1),
+ (4630, 35, 'D7', 7, 'D', 'ECONOMY', 1, 80000.00, 1),
+ (4631, 35, 'E7', 7, 'E', 'ECONOMY', 1, 80000.00, 1),
+ (4632, 35, 'F7', 7, 'F', 'ECONOMY', 1, 80000.00, 1),
+ (4633, 35, 'A8', 8, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4634, 35, 'B8', 8, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4635, 35, 'C8', 8, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4636, 35, 'D8', 8, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4637, 35, 'E8', 8, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4638, 35, 'F8', 8, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4639, 35, 'A9', 9, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4640, 35, 'B9', 9, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4641, 35, 'C9', 9, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4642, 35, 'D9', 9, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4643, 35, 'E9', 9, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4644, 35, 'F9', 9, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4645, 35, 'A10', 10, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4646, 35, 'B10', 10, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4647, 35, 'C10', 10, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4648, 35, 'D10', 10, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4649, 35, 'E10', 10, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4650, 35, 'F10', 10, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4651, 35, 'A11', 11, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4652, 35, 'B11', 11, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4653, 35, 'C11', 11, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4654, 35, 'D11', 11, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4655, 35, 'E11', 11, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4656, 35, 'F11', 11, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4657, 35, 'A12', 12, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4658, 35, 'B12', 12, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4659, 35, 'C12', 12, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4660, 35, 'D12', 12, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4661, 35, 'E12', 12, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4662, 35, 'F12', 12, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4663, 35, 'A13', 13, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4664, 35, 'B13', 13, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4665, 35, 'C13', 13, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4666, 35, 'D13', 13, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4667, 35, 'E13', 13, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4668, 35, 'F13', 13, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4669, 35, 'A14', 14, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4670, 35, 'B14', 14, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4671, 35, 'C14', 14, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4672, 35, 'D14', 14, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4673, 35, 'E14', 14, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4674, 35, 'F14', 14, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4675, 35, 'A15', 15, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4676, 35, 'B15', 15, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4677, 35, 'C15', 15, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4678, 35, 'D15', 15, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4679, 35, 'E15', 15, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4680, 35, 'F15', 15, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4681, 35, 'A16', 16, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4682, 35, 'B16', 16, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4683, 35, 'C16', 16, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4684, 35, 'D16', 16, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4685, 35, 'E16', 16, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4686, 35, 'F16', 16, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4687, 35, 'A17', 17, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4688, 35, 'B17', 17, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4689, 35, 'C17', 17, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4690, 35, 'D17', 17, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4691, 35, 'E17', 17, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4692, 35, 'F17', 17, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4693, 35, 'A18', 18, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4694, 35, 'B18', 18, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4695, 35, 'C18', 18, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4696, 35, 'D18', 18, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4697, 35, 'E18', 18, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4698, 35, 'F18', 18, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4699, 35, 'A19', 19, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4700, 35, 'B19', 19, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4701, 35, 'C19', 19, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4702, 35, 'D19', 19, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4703, 35, 'E19', 19, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4704, 35, 'F19', 19, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4705, 35, 'A20', 20, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4706, 35, 'B20', 20, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4707, 35, 'C20', 20, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4708, 35, 'D20', 20, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4709, 35, 'E20', 20, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4710, 35, 'F20', 20, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4711, 35, 'A21', 21, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4712, 35, 'B21', 21, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4713, 35, 'C21', 21, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4714, 35, 'D21', 21, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4715, 35, 'E21', 21, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4716, 35, 'F21', 21, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4717, 35, 'A22', 22, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4718, 35, 'B22', 22, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4719, 35, 'C22', 22, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4720, 35, 'D22', 22, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4721, 35, 'E22', 22, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4722, 35, 'F22', 22, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4723, 35, 'A23', 23, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4724, 35, 'B23', 23, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4725, 35, 'C23', 23, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4726, 35, 'D23', 23, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4727, 35, 'E23', 23, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4728, 35, 'F23', 23, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4729, 35, 'A24', 24, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4730, 35, 'B24', 24, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4731, 35, 'C24', 24, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4732, 35, 'D24', 24, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4733, 35, 'E24', 24, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4734, 35, 'F24', 24, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4735, 35, 'A25', 25, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4736, 35, 'B25', 25, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4737, 35, 'C25', 25, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4738, 35, 'D25', 25, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4739, 35, 'E25', 25, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4740, 35, 'F25', 25, 'F', 'ECONOMY', 1, 0.00, 0),
+ (4741, 35, 'A26', 26, 'A', 'ECONOMY', 1, 0.00, 0),
+ (4742, 35, 'B26', 26, 'B', 'ECONOMY', 1, 0.00, 0),
+ (4743, 35, 'C26', 26, 'C', 'ECONOMY', 1, 0.00, 0),
+ (4744, 35, 'D26', 26, 'D', 'ECONOMY', 1, 0.00, 0),
+ (4745, 35, 'E26', 26, 'E', 'ECONOMY', 1, 0.00, 0),
+ (4746, 35, 'F26', 26, 'F', 'ECONOMY', 1, 0.00, 0);
+ INSERT INTO dbo.[AircraftSeats] ([SeatID], [AircraftID], [SeatNumber], [RowNumber], [ColumnLetter], [Cabin], [IsActive], [SeatFee], [IsPriority]) VALUES
+ (5497, 41, 'A1', 1, 'A', 'FIRST', 1, 0.00, 0),
+ (5498, 41, 'B1', 1, 'B', 'FIRST', 1, 0.00, 0),
+ (5499, 41, 'E1', 1, 'E', 'FIRST', 1, 0.00, 0),
+ (5500, 41, 'F1', 1, 'F', 'FIRST', 1, 0.00, 0);
+ INSERT INTO dbo.[AircraftSeats] ([SeatID], [AircraftID], [SeatNumber], [RowNumber], [ColumnLetter], [Cabin], [IsActive], [SeatFee], [IsPriority]) VALUES
+ (5501, 41, 'A2', 2, 'A', 'BUSINESS', 1, 0.00, 0),
+ (5502, 41, 'B2', 2, 'B', 'BUSINESS', 1, 0.00, 0),
+ (5503, 41, 'E2', 2, 'E', 'BUSINESS', 1, 0.00, 0),
+ (5504, 41, 'F2', 2, 'F', 'BUSINESS', 1, 0.00, 0),
+ (5505, 41, 'A3', 3, 'A', 'BUSINESS', 1, 0.00, 0),
+ (5506, 41, 'B3', 3, 'B', 'BUSINESS', 1, 0.00, 0),
+ (5507, 41, 'E3', 3, 'E', 'BUSINESS', 1, 0.00, 0),
+ (5508, 41, 'F3', 3, 'F', 'BUSINESS', 1, 0.00, 0),
+ (5509, 41, 'A4', 4, 'A', 'PREMIUM', 1, 0.00, 0),
+ (5510, 41, 'B4', 4, 'B', 'PREMIUM', 1, 0.00, 0),
+ (5511, 41, 'C4', 4, 'C', 'PREMIUM', 1, 0.00, 0),
+ (5512, 41, 'D4', 4, 'D', 'PREMIUM', 1, 0.00, 0),
+ (5513, 41, 'E4', 4, 'E', 'PREMIUM', 1, 0.00, 0),
+ (5514, 41, 'F4', 4, 'F', 'PREMIUM', 1, 0.00, 0),
+ (5515, 41, 'A5', 5, 'A', 'PREMIUM', 1, 0.00, 0),
+ (5516, 41, 'B5', 5, 'B', 'PREMIUM', 1, 0.00, 0),
+ (5517, 41, 'C5', 5, 'C', 'PREMIUM', 1, 0.00, 0),
+ (5518, 41, 'D5', 5, 'D', 'PREMIUM', 1, 0.00, 0),
+ (5519, 41, 'E5', 5, 'E', 'PREMIUM', 1, 0.00, 0),
+ (5520, 41, 'F5', 5, 'F', 'PREMIUM', 1, 0.00, 0),
+ (5521, 41, 'A6', 6, 'A', 'PREMIUM', 1, 0.00, 0),
+ (5522, 41, 'B6', 6, 'B', 'PREMIUM', 1, 0.00, 0),
+ (5523, 41, 'C6', 6, 'C', 'PREMIUM', 1, 0.00, 0),
+ (5524, 41, 'D6', 6, 'D', 'PREMIUM', 1, 0.00, 0),
+ (5525, 41, 'E6', 6, 'E', 'PREMIUM', 1, 0.00, 0),
+ (5526, 41, 'F6', 6, 'F', 'PREMIUM', 1, 0.00, 0),
+ (5527, 41, 'A7', 7, 'A', 'ECONOMY', 1, 80000.00, 1),
+ (5528, 41, 'B7', 7, 'B', 'ECONOMY', 1, 80000.00, 1),
+ (5529, 41, 'C7', 7, 'C', 'ECONOMY', 1, 80000.00, 1),
+ (5530, 41, 'D7', 7, 'D', 'ECONOMY', 1, 80000.00, 1),
+ (5531, 41, 'E7', 7, 'E', 'ECONOMY', 1, 80000.00, 1),
+ (5532, 41, 'F7', 7, 'F', 'ECONOMY', 1, 80000.00, 1),
+ (5533, 41, 'A8', 8, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5534, 41, 'B8', 8, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5535, 41, 'C8', 8, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5536, 41, 'D8', 8, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5537, 41, 'E8', 8, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5538, 41, 'F8', 8, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5539, 41, 'A9', 9, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5540, 41, 'B9', 9, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5541, 41, 'C9', 9, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5542, 41, 'D9', 9, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5543, 41, 'E9', 9, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5544, 41, 'F9', 9, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5545, 41, 'A10', 10, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5546, 41, 'B10', 10, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5547, 41, 'C10', 10, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5548, 41, 'D10', 10, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5549, 41, 'E10', 10, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5550, 41, 'F10', 10, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5551, 41, 'A11', 11, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5552, 41, 'B11', 11, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5553, 41, 'C11', 11, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5554, 41, 'D11', 11, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5555, 41, 'E11', 11, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5556, 41, 'F11', 11, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5557, 41, 'A12', 12, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5558, 41, 'B12', 12, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5559, 41, 'C12', 12, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5560, 41, 'D12', 12, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5561, 41, 'E12', 12, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5562, 41, 'F12', 12, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5563, 41, 'A13', 13, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5564, 41, 'B13', 13, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5565, 41, 'C13', 13, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5566, 41, 'D13', 13, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5567, 41, 'E13', 13, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5568, 41, 'F13', 13, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5569, 41, 'A14', 14, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5570, 41, 'B14', 14, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5571, 41, 'C14', 14, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5572, 41, 'D14', 14, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5573, 41, 'E14', 14, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5574, 41, 'F14', 14, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5575, 41, 'A15', 15, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5576, 41, 'B15', 15, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5577, 41, 'C15', 15, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5578, 41, 'D15', 15, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5579, 41, 'E15', 15, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5580, 41, 'F15', 15, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5581, 41, 'A16', 16, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5582, 41, 'B16', 16, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5583, 41, 'C16', 16, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5584, 41, 'D16', 16, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5585, 41, 'E16', 16, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5586, 41, 'F16', 16, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5587, 41, 'A17', 17, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5588, 41, 'B17', 17, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5589, 41, 'C17', 17, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5590, 41, 'D17', 17, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5591, 41, 'E17', 17, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5592, 41, 'F17', 17, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5593, 41, 'A18', 18, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5594, 41, 'B18', 18, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5595, 41, 'C18', 18, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5596, 41, 'D18', 18, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5597, 41, 'E18', 18, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5598, 41, 'F18', 18, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5599, 41, 'A19', 19, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5600, 41, 'B19', 19, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5601, 41, 'C19', 19, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5602, 41, 'D19', 19, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5603, 41, 'E19', 19, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5604, 41, 'F19', 19, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5605, 41, 'A20', 20, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5606, 41, 'B20', 20, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5607, 41, 'C20', 20, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5608, 41, 'D20', 20, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5609, 41, 'E20', 20, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5610, 41, 'F20', 20, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5611, 41, 'A21', 21, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5612, 41, 'B21', 21, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5613, 41, 'C21', 21, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5614, 41, 'D21', 21, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5615, 41, 'E21', 21, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5616, 41, 'F21', 21, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5617, 41, 'A22', 22, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5618, 41, 'B22', 22, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5619, 41, 'C22', 22, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5620, 41, 'D22', 22, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5621, 41, 'E22', 22, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5622, 41, 'F22', 22, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5623, 41, 'A23', 23, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5624, 41, 'B23', 23, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5625, 41, 'C23', 23, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5626, 41, 'D23', 23, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5627, 41, 'E23', 23, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5628, 41, 'F23', 23, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5629, 41, 'A24', 24, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5630, 41, 'B24', 24, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5631, 41, 'C24', 24, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5632, 41, 'D24', 24, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5633, 41, 'E24', 24, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5634, 41, 'F24', 24, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5635, 41, 'A25', 25, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5636, 41, 'B25', 25, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5637, 41, 'C25', 25, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5638, 41, 'D25', 25, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5639, 41, 'E25', 25, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5640, 41, 'F25', 25, 'F', 'ECONOMY', 1, 0.00, 0),
+ (5641, 41, 'A26', 26, 'A', 'ECONOMY', 1, 0.00, 0),
+ (5642, 41, 'B26', 26, 'B', 'ECONOMY', 1, 0.00, 0),
+ (5643, 41, 'C26', 26, 'C', 'ECONOMY', 1, 0.00, 0),
+ (5644, 41, 'D26', 26, 'D', 'ECONOMY', 1, 0.00, 0),
+ (5645, 41, 'E26', 26, 'E', 'ECONOMY', 1, 0.00, 0),
+ (5646, 41, 'F26', 26, 'F', 'ECONOMY', 1, 0.00, 0);
+ SET IDENTITY_INSERT dbo.[AircraftSeats] OFF;
+
+ -- Flights: 176 dong.
+ SET IDENTITY_INSERT dbo.[Flights] ON;
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (1, 'AF100', 1, 1, 2, '2026-12-01T02:00:00', '2026-12-01T04:10:00', 'SCHEDULED'),
+ (2, 'AF101', 1, 2, 1, '2026-12-01T05:30:00', '2026-12-01T07:40:00', 'SCHEDULED'),
+ (3, 'AF102', 3, 1, 3, '2026-12-01T02:30:00', '2026-12-01T03:55:00', 'SCHEDULED'),
+ (4, 'AF103', 3, 3, 1, '2026-12-01T05:15:00', '2026-12-01T06:40:00', 'SCHEDULED'),
+ (5, 'AF100', 1, 1, 2, '2026-12-02T02:00:00', '2026-12-02T04:10:00', 'SCHEDULED'),
+ (6, 'AF101', 1, 2, 1, '2026-12-02T05:30:00', '2026-12-02T07:40:00', 'SCHEDULED'),
+ (7, 'AF102', 3, 1, 3, '2026-12-02T02:30:00', '2026-12-02T03:55:00', 'SCHEDULED'),
+ (8, 'AF103', 3, 3, 1, '2026-12-02T05:15:00', '2026-12-02T06:40:00', 'SCHEDULED'),
+ (9, 'AF100', 1, 1, 2, '2026-12-03T02:00:00', '2026-12-03T04:10:00', 'SCHEDULED'),
+ (10, 'AF101', 1, 2, 1, '2026-12-03T05:30:00', '2026-12-03T07:40:00', 'SCHEDULED'),
+ (11, 'AF102', 3, 1, 3, '2026-12-03T02:30:00', '2026-12-03T03:55:00', 'SCHEDULED'),
+ (12, 'AF103', 3, 3, 1, '2026-12-03T05:15:00', '2026-12-03T06:40:00', 'SCHEDULED'),
+ (13, 'AF100', 1, 1, 2, '2026-12-04T02:00:00', '2026-12-04T04:10:00', 'SCHEDULED'),
+ (14, 'AF101', 1, 2, 1, '2026-12-04T05:30:00', '2026-12-04T07:40:00', 'SCHEDULED'),
+ (15, 'AF102', 3, 1, 3, '2026-12-04T02:30:00', '2026-12-04T03:55:00', 'SCHEDULED'),
+ (16, 'AF103', 3, 3, 1, '2026-12-04T05:15:00', '2026-12-04T06:40:00', 'SCHEDULED'),
+ (17, 'AF100', 1, 1, 2, '2026-12-05T02:00:00', '2026-12-05T04:10:00', 'SCHEDULED'),
+ (18, 'AF101', 1, 2, 1, '2026-12-05T05:30:00', '2026-12-05T07:40:00', 'SCHEDULED'),
+ (19, 'AF102', 3, 1, 3, '2026-12-05T02:30:00', '2026-12-05T03:55:00', 'SCHEDULED'),
+ (20, 'AF103', 3, 3, 1, '2026-12-05T05:15:00', '2026-12-05T06:40:00', 'SCHEDULED'),
+ (21, 'AF100', 1, 1, 2, '2026-12-06T02:00:00', '2026-12-06T04:10:00', 'SCHEDULED'),
+ (22, 'AF101', 1, 2, 1, '2026-12-06T05:30:00', '2026-12-06T07:40:00', 'SCHEDULED'),
+ (23, 'AF102', 3, 1, 3, '2026-12-06T02:30:00', '2026-12-06T03:55:00', 'SCHEDULED'),
+ (24, 'AF103', 3, 3, 1, '2026-12-06T05:15:00', '2026-12-06T06:40:00', 'SCHEDULED'),
+ (25, 'AF100', 1, 1, 2, '2026-12-07T02:00:00', '2026-12-07T04:10:00', 'SCHEDULED'),
+ (26, 'AF101', 1, 2, 1, '2026-12-07T05:30:00', '2026-12-07T07:40:00', 'SCHEDULED'),
+ (27, 'AF102', 3, 1, 3, '2026-12-07T02:30:00', '2026-12-07T03:55:00', 'SCHEDULED'),
+ (28, 'AF103', 3, 3, 1, '2026-12-07T05:15:00', '2026-12-07T06:40:00', 'SCHEDULED'),
+ (29, 'AF100', 1, 1, 2, '2026-12-08T02:00:00', '2026-12-08T04:10:00', 'SCHEDULED'),
+ (30, 'AF101', 1, 2, 1, '2026-12-08T05:30:00', '2026-12-08T07:40:00', 'SCHEDULED'),
+ (31, 'AF102', 3, 1, 3, '2026-12-08T02:30:00', '2026-12-08T03:55:00', 'SCHEDULED'),
+ (32, 'AF103', 3, 3, 1, '2026-12-08T05:15:00', '2026-12-08T06:40:00', 'SCHEDULED'),
+ (33, 'AF100', 1, 1, 2, '2026-12-09T02:00:00', '2026-12-09T04:10:00', 'SCHEDULED'),
+ (34, 'AF101', 1, 2, 1, '2026-12-09T05:30:00', '2026-12-09T07:40:00', 'SCHEDULED'),
+ (35, 'AF102', 3, 1, 3, '2026-12-09T02:30:00', '2026-12-09T03:55:00', 'SCHEDULED'),
+ (36, 'AF103', 3, 3, 1, '2026-12-09T05:15:00', '2026-12-09T06:40:00', 'SCHEDULED'),
+ (37, 'AF100', 1, 1, 2, '2026-12-10T02:00:00', '2026-12-10T04:10:00', 'SCHEDULED'),
+ (38, 'AF101', 1, 2, 1, '2026-12-10T05:30:00', '2026-12-10T07:40:00', 'SCHEDULED'),
+ (39, 'AF102', 3, 1, 3, '2026-12-10T02:30:00', '2026-12-10T03:55:00', 'SCHEDULED'),
+ (40, 'AF103', 3, 3, 1, '2026-12-10T05:15:00', '2026-12-10T06:40:00', 'SCHEDULED'),
+ (230, 'IX0001', 41, 1, 11, '2026-12-02T00:00:00', '2026-12-02T03:35:00', 'SCHEDULED'),
+ (273, 'IX1401', 35, 1, 25, '2026-12-02T04:30:00', '2026-12-02T10:00:00', 'SCHEDULED'),
+ (285, 'IX0002', 41, 11, 1, '2026-12-02T06:35:00', '2026-12-02T10:10:00', 'SCHEDULED'),
+ (309, 'IX1402', 35, 25, 1, '2026-12-02T13:00:00', '2026-12-02T18:30:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (630, 'IX0001', 41, 1, 11, '2026-12-06T00:00:00', '2026-12-06T03:35:00', 'SCHEDULED'),
+ (673, 'IX1401', 35, 1, 25, '2026-12-06T04:30:00', '2026-12-06T10:00:00', 'SCHEDULED'),
+ (684, 'IX0002', 41, 11, 1, '2026-12-06T06:35:00', '2026-12-06T10:10:00', 'SCHEDULED'),
+ (709, 'IX1402', 35, 25, 1, '2026-12-06T13:00:00', '2026-12-06T18:30:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (1030, 'IX0001', 41, 1, 11, '2026-12-10T00:00:00', '2026-12-10T03:35:00', 'SCHEDULED'),
+ (1073, 'IX1401', 35, 1, 25, '2026-12-10T04:30:00', '2026-12-10T10:00:00', 'SCHEDULED'),
+ (1085, 'IX0002', 41, 11, 1, '2026-12-10T06:35:00', '2026-12-10T10:10:00', 'SCHEDULED'),
+ (1109, 'IX1402', 35, 25, 1, '2026-12-10T13:00:00', '2026-12-10T18:30:00', 'SCHEDULED'),
+ (1430, 'IX0001', 41, 1, 11, '2026-12-14T00:00:00', '2026-12-14T03:35:00', 'SCHEDULED'),
+ (1473, 'IX1401', 35, 1, 25, '2026-12-14T04:30:00', '2026-12-14T10:00:00', 'SCHEDULED'),
+ (1485, 'IX0002', 41, 11, 1, '2026-12-14T06:35:00', '2026-12-14T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (1509, 'IX1402', 35, 25, 1, '2026-12-14T13:00:00', '2026-12-14T18:30:00', 'SCHEDULED'),
+ (1873, 'IX1401', 35, 1, 25, '2026-12-18T04:30:00', '2026-12-18T10:00:00', 'SCHEDULED'),
+ (1909, 'IX1402', 35, 25, 1, '2026-12-18T13:00:00', '2026-12-18T18:30:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (2030, 'IX0001', 41, 1, 11, '2026-12-20T00:00:00', '2026-12-20T03:35:00', 'SCHEDULED'),
+ (2084, 'IX0002', 41, 11, 1, '2026-12-20T06:35:00', '2026-12-20T10:10:00', 'SCHEDULED'),
+ (2273, 'IX1401', 35, 1, 25, '2026-12-22T04:30:00', '2026-12-22T10:00:00', 'SCHEDULED'),
+ (2309, 'IX1402', 35, 25, 1, '2026-12-22T13:00:00', '2026-12-22T18:30:00', 'SCHEDULED'),
+ (2430, 'IX0001', 41, 1, 11, '2026-12-24T00:00:00', '2026-12-24T03:35:00', 'SCHEDULED'),
+ (2485, 'IX0002', 41, 11, 1, '2026-12-24T06:35:00', '2026-12-24T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (2673, 'IX1401', 35, 1, 25, '2026-12-26T04:30:00', '2026-12-26T10:00:00', 'SCHEDULED'),
+ (2709, 'IX1402', 35, 25, 1, '2026-12-26T13:00:00', '2026-12-26T18:30:00', 'SCHEDULED'),
+ (2830, 'IX0001', 41, 1, 11, '2026-12-28T00:00:00', '2026-12-28T03:35:00', 'SCHEDULED'),
+ (2885, 'IX0002', 41, 11, 1, '2026-12-28T06:35:00', '2026-12-28T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (3073, 'IX1401', 35, 1, 25, '2026-12-30T04:30:00', '2026-12-30T10:00:00', 'SCHEDULED'),
+ (3109, 'IX1402', 35, 25, 1, '2026-12-30T13:00:00', '2026-12-30T18:30:00', 'SCHEDULED'),
+ (3230, 'IX0001', 41, 1, 11, '2027-01-01T00:00:00', '2027-01-01T03:35:00', 'SCHEDULED'),
+ (3285, 'IX0002', 41, 11, 1, '2027-01-01T06:35:00', '2027-01-01T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (3630, 'IX0001', 41, 1, 11, '2027-01-05T00:00:00', '2027-01-05T03:35:00', 'SCHEDULED'),
+ (3673, 'IX1401', 35, 1, 25, '2027-01-05T04:30:00', '2027-01-05T10:00:00', 'SCHEDULED'),
+ (3686, 'IX0002', 41, 11, 1, '2027-01-05T06:35:00', '2027-01-05T10:10:00', 'SCHEDULED'),
+ (3709, 'IX1402', 35, 25, 1, '2027-01-05T13:00:00', '2027-01-05T18:30:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (4030, 'IX0001', 41, 1, 11, '2027-01-09T00:00:00', '2027-01-09T03:35:00', 'SCHEDULED'),
+ (4073, 'IX1401', 35, 1, 25, '2027-01-09T04:30:00', '2027-01-09T10:00:00', 'SCHEDULED'),
+ (4086, 'IX0002', 41, 11, 1, '2027-01-09T06:35:00', '2027-01-09T10:10:00', 'SCHEDULED'),
+ (4109, 'IX1402', 35, 25, 1, '2027-01-09T13:00:00', '2027-01-09T18:30:00', 'SCHEDULED'),
+ (4430, 'IX0001', 41, 1, 11, '2027-01-13T00:00:00', '2027-01-13T03:35:00', 'SCHEDULED'),
+ (4473, 'IX1401', 35, 1, 25, '2027-01-13T04:30:00', '2027-01-13T10:00:00', 'SCHEDULED'),
+ (4485, 'IX0002', 41, 11, 1, '2027-01-13T06:35:00', '2027-01-13T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (4509, 'IX1402', 35, 25, 1, '2027-01-13T13:00:00', '2027-01-13T18:30:00', 'SCHEDULED'),
+ (4873, 'IX1401', 35, 1, 25, '2027-01-17T04:30:00', '2027-01-17T10:00:00', 'SCHEDULED'),
+ (4909, 'IX1402', 35, 25, 1, '2027-01-17T13:00:00', '2027-01-17T18:30:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (5030, 'IX0001', 41, 1, 11, '2027-01-19T00:00:00', '2027-01-19T03:35:00', 'SCHEDULED'),
+ (5086, 'IX0002', 41, 11, 1, '2027-01-19T06:35:00', '2027-01-19T10:10:00', 'SCHEDULED'),
+ (5273, 'IX1401', 35, 1, 25, '2027-01-21T04:30:00', '2027-01-21T10:00:00', 'SCHEDULED'),
+ (5309, 'IX1402', 35, 25, 1, '2027-01-21T13:00:00', '2027-01-21T18:30:00', 'SCHEDULED'),
+ (5430, 'IX0001', 41, 1, 11, '2027-01-23T00:00:00', '2027-01-23T03:35:00', 'SCHEDULED'),
+ (5486, 'IX0002', 41, 11, 1, '2027-01-23T06:35:00', '2027-01-23T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (5673, 'IX1401', 35, 1, 25, '2027-01-25T04:30:00', '2027-01-25T10:00:00', 'SCHEDULED'),
+ (5709, 'IX1402', 35, 25, 1, '2027-01-25T13:00:00', '2027-01-25T18:30:00', 'SCHEDULED'),
+ (5830, 'IX0001', 41, 1, 11, '2027-01-27T00:00:00', '2027-01-27T03:35:00', 'SCHEDULED'),
+ (5885, 'IX0002', 41, 11, 1, '2027-01-27T06:35:00', '2027-01-27T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (6073, 'IX1401', 35, 1, 25, '2027-01-29T04:30:00', '2027-01-29T10:00:00', 'SCHEDULED'),
+ (6109, 'IX1402', 35, 25, 1, '2027-01-29T13:00:00', '2027-01-29T18:30:00', 'SCHEDULED'),
+ (6226, 'IX0001', 41, 1, 11, '2027-01-31T00:00:00', '2027-01-31T03:35:00', 'SCHEDULED'),
+ (6266, 'IX0002', 41, 11, 1, '2027-01-31T06:35:00', '2027-01-31T10:10:00', 'SCHEDULED');
+ INSERT INTO dbo.[Flights] ([FlightID], [FlightNumber], [AircraftID], [OriginID], [DestinationID], [DepartureTime], [ArrivalTime], [Status]) VALUES
+ (7001, 'AF7001', 1, 1, 2, '2026-12-12T02:00:00', '2026-12-12T04:10:00', 'SCHEDULED'),
+ (7002, 'AF7002', 1, 2, 9, '2026-12-12T05:40:00', '2026-12-12T07:45:00', 'SCHEDULED'),
+ (7003, 'AF7003', 1, 9, 2, '2026-12-13T07:45:00', '2026-12-13T09:50:00', 'SCHEDULED'),
+ (7004, 'AF7004', 1, 2, 1, '2026-12-13T11:20:00', '2026-12-13T13:30:00', 'SCHEDULED'),
+ (7005, 'BA7005', 35, 1, 41, '2026-12-03T02:00:00', '2026-12-03T19:35:00', 'SCHEDULED'),
+ (7006, 'BA7006', 35, 41, 1, '2026-12-04T19:35:00', '2026-12-05T13:10:00', 'SCHEDULED'),
+ (7007, 'AF7007', 41, 1, 39, '2026-12-03T02:00:00', '2026-12-03T18:30:00', 'SCHEDULED'),
+ (7008, 'AF7008', 41, 39, 1, '2026-12-04T18:30:00', '2026-12-05T11:00:00', 'SCHEDULED'),
+ (7009, 'BA7009', 35, 1, 40, '2026-12-07T02:00:00', '2026-12-07T17:45:00', 'SCHEDULED'),
+ (7010, 'BA7010', 35, 40, 1, '2026-12-08T17:45:00', '2026-12-09T09:30:00', 'SCHEDULED'),
+ (7011, 'AF7011', 41, 1, 42, '2026-12-07T02:00:00', '2026-12-07T16:35:00', 'SCHEDULED'),
+ (7012, 'AF7012', 41, 42, 1, '2026-12-08T16:35:00', '2026-12-09T07:10:00', 'SCHEDULED'),
+ (7013, 'BA7013', 35, 1, 35, '2026-12-11T02:00:00', '2026-12-11T14:35:00', 'SCHEDULED'),
+ (7014, 'BA7014', 35, 35, 1, '2026-12-12T14:35:00', '2026-12-13T03:10:00', 'SCHEDULED'),
+ (7015, 'AF7015', 41, 1, 34, '2026-12-11T02:00:00', '2026-12-11T14:25:00', 'SCHEDULED'),
+ (7016, 'AF7016', 41, 34, 1, '2026-12-12T14:25:00', '2026-12-13T02:50:00', 'SCHEDULED'),
+ (7017, 'BA7017', 35, 1, 36, '2026-12-15T02:00:00', '2026-12-15T13:55:00', 'SCHEDULED'),
+ (7018, 'BA7018', 35, 36, 1, '2026-12-16T13:55:00', '2026-12-17T01:50:00', 'SCHEDULED'),
+ (7019, 'AF7019', 41, 1, 37, '2026-12-15T00:00:00', '2026-12-15T10:40:00', 'SCHEDULED'),
+ (7020, 'AF7020', 41, 37, 1, '2026-12-16T10:40:00', '2026-12-16T21:20:00', 'SCHEDULED'),
+ (7021, 'AF7021', 41, 1, 38, '2026-12-17T02:00:00', '2026-12-17T12:35:00', 'SCHEDULED'),
+ (7022, 'AF7022', 41, 38, 1, '2026-12-18T12:35:00', '2026-12-18T23:10:00', 'SCHEDULED'),
+ (7023, 'BA7023', 35, 1, 33, '2026-12-19T02:00:00', '2026-12-19T12:15:00', 'SCHEDULED'),
+ (7024, 'BA7024', 35, 33, 1, '2026-12-20T12:15:00', '2026-12-20T22:30:00', 'SCHEDULED'),
+ (7025, 'AF7025', 41, 1, 32, '2026-12-21T02:00:00', '2026-12-21T09:45:00', 'SCHEDULED'),
+ (7026, 'AF7026', 41, 32, 1, '2026-12-22T09:45:00', '2026-12-22T17:30:00', 'SCHEDULED'),
+ (7027, 'BA7027', 35, 1, 31, '2026-12-23T02:00:00', '2026-12-23T09:20:00', 'SCHEDULED'),
+ (7028, 'BA7028', 35, 31, 1, '2026-12-24T09:20:00', '2026-12-24T16:40:00', 'SCHEDULED'),
+ (7029, 'AF7029', 41, 1, 17, '2026-12-25T02:00:00', '2026-12-25T07:10:00', 'SCHEDULED'),
+ (7030, 'AF7030', 41, 17, 1, '2026-12-26T07:10:00', '2026-12-26T12:20:00', 'SCHEDULED'),
+ (7031, 'BA7031', 35, 1, 30, '2026-12-27T02:00:00', '2026-12-27T07:05:00', 'SCHEDULED'),
+ (7032, 'BA7032', 35, 30, 1, '2026-12-28T07:05:00', '2026-12-28T12:10:00', 'SCHEDULED'),
+ (7033, 'AF7033', 41, 1, 26, '2026-12-29T02:00:00', '2026-12-29T06:50:00', 'SCHEDULED'),
+ (7034, 'AF7034', 41, 26, 1, '2026-12-30T06:50:00', '2026-12-30T11:40:00', 'SCHEDULED'),
+ (7035, 'BA7035', 35, 1, 18, '2026-12-31T02:00:00', '2026-12-31T06:35:00', 'SCHEDULED'),
+ (7036, 'BA7036', 35, 18, 1, '2027-01-01T06:35:00', '2027-01-01T11:10:00', 'SCHEDULED'),
+ (7037, 'BA7037', 35, 1, 29, '2027-01-02T02:00:00', '2027-01-02T06:35:00', 'SCHEDULED'),
+ (7038, 'BA7038', 35, 29, 1, '2027-01-03T06:35:00', '2027-01-03T11:10:00', 'SCHEDULED'),
+ (7039, 'AF7039', 41, 1, 24, '2027-01-02T02:00:00', '2027-01-02T06:15:00', 'SCHEDULED'),
+ (7040, 'AF7040', 41, 24, 1, '2027-01-03T06:15:00', '2027-01-03T10:30:00', 'SCHEDULED'),
+ (7041, 'BA7041', 35, 1, 23, '2027-01-06T02:00:00', '2027-01-06T06:10:00', 'SCHEDULED'),
+ (7042, 'BA7042', 35, 23, 1, '2027-01-07T06:10:00', '2027-01-07T10:20:00', 'SCHEDULED'),
+ (7043, 'AF7043', 41, 1, 20, '2027-01-06T02:00:00', '2027-01-06T05:40:00', 'SCHEDULED'),
+ (7044, 'AF7044', 41, 20, 1, '2027-01-07T05:40:00', '2027-01-07T09:20:00', 'SCHEDULED'),
+ (7045, 'BA7045', 35, 1, 27, '2027-01-10T02:00:00', '2027-01-10T05:40:00', 'SCHEDULED'),
+ (7046, 'BA7046', 35, 27, 1, '2027-01-11T05:40:00', '2027-01-11T09:20:00', 'SCHEDULED'),
+ (7047, 'AF7047', 41, 1, 15, '2027-01-10T02:00:00', '2027-01-10T05:25:00', 'SCHEDULED'),
+ (7048, 'AF7048', 41, 15, 1, '2027-01-11T05:25:00', '2027-01-11T08:50:00', 'SCHEDULED'),
+ (7049, 'BA7049', 35, 1, 28, '2027-01-14T02:00:00', '2027-01-14T05:10:00', 'SCHEDULED'),
+ (7050, 'BA7050', 35, 28, 1, '2027-01-15T05:10:00', '2027-01-15T08:20:00', 'SCHEDULED'),
+ (7051, 'AF7051', 41, 1, 16, '2027-01-14T02:00:00', '2027-01-14T05:05:00', 'SCHEDULED'),
+ (7052, 'AF7052', 41, 16, 1, '2027-01-15T05:05:00', '2027-01-15T08:10:00', 'SCHEDULED'),
+ (7053, 'AF7053', 41, 1, 19, '2027-01-16T02:00:00', '2027-01-16T05:00:00', 'SCHEDULED'),
+ (7054, 'AF7054', 41, 19, 1, '2027-01-17T05:00:00', '2027-01-17T08:00:00', 'SCHEDULED'),
+ (7055, 'BA7055', 35, 1, 13, '2027-01-18T02:00:00', '2027-01-18T04:50:00', 'SCHEDULED'),
+ (7056, 'BA7056', 35, 13, 1, '2027-01-19T04:50:00', '2027-01-19T07:40:00', 'SCHEDULED'),
+ (7057, 'AF7057', 41, 1, 22, '2027-01-20T02:00:00', '2027-01-20T04:50:00', 'SCHEDULED'),
+ (7058, 'AF7058', 41, 22, 1, '2027-01-21T04:50:00', '2027-01-21T07:40:00', 'SCHEDULED'),
+ (7059, 'BA7059', 35, 1, 12, '2027-01-22T02:00:00', '2027-01-22T04:00:00', 'SCHEDULED'),
+ (7060, 'BA7060', 35, 12, 1, '2027-01-23T04:00:00', '2027-01-23T06:00:00', 'SCHEDULED'),
+ (7061, 'AF7061', 41, 1, 21, '2027-01-24T02:00:00', '2027-01-24T03:50:00', 'SCHEDULED'),
+ (7062, 'AF7062', 41, 21, 1, '2027-01-25T03:50:00', '2027-01-25T05:40:00', 'SCHEDULED'),
+ (7063, 'BA7063', 35, 1, 14, '2027-01-26T02:00:00', '2027-01-26T03:40:00', 'SCHEDULED'),
+ (7064, 'BA7064', 35, 14, 1, '2027-01-27T03:40:00', '2027-01-27T05:20:00', 'SCHEDULED'),
+ (7065, 'LS7065', 3, 1, 5, '2026-12-12T02:00:00', '2026-12-12T04:15:00', 'SCHEDULED'),
+ (7066, 'LS7066', 3, 5, 1, '2026-12-13T04:15:00', '2026-12-13T06:30:00', 'SCHEDULED'),
+ (7067, 'AF7067', 1, 1, 6, '2026-12-14T02:00:00', '2026-12-14T04:15:00', 'SCHEDULED'),
+ (7068, 'AF7068', 1, 6, 1, '2026-12-15T04:15:00', '2026-12-15T06:30:00', 'SCHEDULED'),
+ (7069, 'LS7069', 3, 1, 4, '2026-12-14T02:00:00', '2026-12-14T04:05:00', 'SCHEDULED'),
+ (7070, 'LS7070', 3, 4, 1, '2026-12-15T04:05:00', '2026-12-15T06:10:00', 'SCHEDULED'),
+ (7071, 'AF7071', 1, 1, 8, '2026-12-16T02:00:00', '2026-12-16T04:05:00', 'SCHEDULED'),
+ (7072, 'AF7072', 1, 8, 1, '2026-12-17T04:05:00', '2026-12-17T06:10:00', 'SCHEDULED'),
+ (7073, 'LS7073', 3, 1, 7, '2026-12-16T02:00:00', '2026-12-16T03:20:00', 'SCHEDULED'),
+ (7074, 'LS7074', 3, 7, 1, '2026-12-17T03:20:00', '2026-12-17T04:40:00', 'SCHEDULED'),
+ (7075, 'AF7075', 1, 1, 10, '2026-12-18T02:00:00', '2026-12-18T02:55:00', 'SCHEDULED'),
+ (7076, 'AF7076', 1, 10, 1, '2026-12-19T02:55:00', '2026-12-19T03:50:00', 'SCHEDULED');
+ SET IDENTITY_INSERT dbo.[Flights] OFF;
+
+ -- FlightFares: 352 dong.
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1, 1, 1700000.00, 0.1000),
+ (1, 3, 3400000.00, 0.1000),
+ (2, 1, 1750000.00, 0.1000),
+ (2, 2, 2130000.00, 0.1000),
+ (3, 1, 1300000.00, 0.1000),
+ (3, 3, 3000000.00, 0.1000),
+ (4, 1, 1350000.00, 0.1000),
+ (4, 2, 1730000.00, 0.1000),
+ (5, 1, 1900000.00, 0.1000),
+ (5, 3, 3600000.00, 0.1000),
+ (6, 1, 1950000.00, 0.1000),
+ (6, 2, 2330000.00, 0.1000),
+ (7, 1, 1500000.00, 0.1000),
+ (7, 3, 3200000.00, 0.1000),
+ (8, 1, 1200000.00, 0.1000),
+ (8, 2, 1580000.00, 0.1000),
+ (9, 1, 1750000.00, 0.1000),
+ (9, 3, 3450000.00, 0.1000),
+ (10, 1, 1800000.00, 0.1000),
+ (10, 2, 2180000.00, 0.1000),
+ (11, 1, 1350000.00, 0.1000),
+ (11, 3, 3050000.00, 0.1000),
+ (12, 1, 1400000.00, 0.1000),
+ (12, 2, 1780000.00, 0.1000),
+ (13, 1, 1950000.00, 0.1000),
+ (13, 3, 3650000.00, 0.1000),
+ (14, 1, 2000000.00, 0.1000),
+ (14, 2, 2380000.00, 0.1000),
+ (15, 1, 1200000.00, 0.1000),
+ (15, 3, 2900000.00, 0.1000),
+ (16, 1, 1250000.00, 0.1000),
+ (16, 2, 1630000.00, 0.1000),
+ (17, 1, 1800000.00, 0.1000),
+ (17, 3, 3500000.00, 0.1000),
+ (18, 1, 1850000.00, 0.1000),
+ (18, 2, 2230000.00, 0.1000),
+ (19, 1, 1400000.00, 0.1000),
+ (19, 3, 3100000.00, 0.1000),
+ (20, 1, 1450000.00, 0.1000),
+ (20, 2, 1830000.00, 0.1000),
+ (21, 1, 2000000.00, 0.1000),
+ (21, 3, 3700000.00, 0.1000),
+ (22, 1, 1700000.00, 0.1000),
+ (22, 2, 2080000.00, 0.1000),
+ (23, 1, 1250000.00, 0.1000),
+ (23, 3, 2950000.00, 0.1000),
+ (24, 1, 1300000.00, 0.1000),
+ (24, 2, 1680000.00, 0.1000),
+ (25, 1, 1850000.00, 0.1000),
+ (25, 3, 3550000.00, 0.1000),
+ (26, 1, 1900000.00, 0.1000),
+ (26, 2, 2280000.00, 0.1000),
+ (27, 1, 1450000.00, 0.1000),
+ (27, 3, 3150000.00, 0.1000),
+ (28, 1, 1500000.00, 0.1000),
+ (28, 2, 1880000.00, 0.1000),
+ (29, 1, 1700000.00, 0.1000),
+ (29, 3, 3400000.00, 0.1000),
+ (30, 1, 1750000.00, 0.1000),
+ (30, 2, 2130000.00, 0.1000),
+ (31, 1, 1300000.00, 0.1000),
+ (31, 3, 3000000.00, 0.1000),
+ (32, 1, 1350000.00, 0.1000),
+ (32, 2, 1730000.00, 0.1000),
+ (33, 1, 1900000.00, 0.1000),
+ (33, 3, 3600000.00, 0.1000),
+ (34, 1, 1950000.00, 0.1000),
+ (34, 2, 2330000.00, 0.1000),
+ (35, 1, 1500000.00, 0.1000),
+ (35, 3, 3200000.00, 0.1000),
+ (36, 1, 1200000.00, 0.1000),
+ (36, 2, 1580000.00, 0.1000),
+ (37, 1, 1750000.00, 0.1000),
+ (37, 3, 3450000.00, 0.1000),
+ (38, 1, 1800000.00, 0.1000),
+ (38, 2, 2180000.00, 0.1000),
+ (39, 1, 1350000.00, 0.1000),
+ (39, 3, 3050000.00, 0.1000),
+ (40, 1, 1400000.00, 0.1000),
+ (40, 2, 1780000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (230, 4, 3483000.00, 0.1000),
+ (230, 10, 7664000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (273, 4, 4691000.00, 0.1000),
+ (273, 13, 15481000.00, 0.1000),
+ (285, 4, 3483000.00, 0.1000),
+ (285, 7, 4877000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (309, 4, 4691000.00, 0.1000),
+ (309, 10, 10321000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (630, 4, 3690000.00, 0.1000),
+ (630, 13, 12176000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (673, 4, 4969000.00, 0.1000),
+ (673, 7, 6957000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (684, 4, 3690000.00, 0.1000),
+ (684, 10, 8118000.00, 0.1000),
+ (709, 4, 4969000.00, 0.1000),
+ (709, 13, 16398000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1030, 4, 3350000.00, 0.1000),
+ (1030, 7, 4689000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1073, 4, 4511000.00, 0.1000),
+ (1073, 10, 9924000.00, 0.1000),
+ (1085, 4, 3350000.00, 0.1000),
+ (1085, 13, 11053000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1109, 4, 4511000.00, 0.1000),
+ (1109, 7, 6315000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1430, 4, 3617000.00, 0.1000),
+ (1430, 10, 7958000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1473, 4, 4872000.00, 0.1000),
+ (1473, 13, 16077000.00, 0.1000),
+ (1485, 4, 3617000.00, 0.1000),
+ (1485, 7, 5064000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1509, 4, 4872000.00, 0.1000),
+ (1509, 10, 10718000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1873, 4, 5164000.00, 0.1000),
+ (1873, 13, 17041000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (1909, 4, 5164000.00, 0.1000),
+ (1909, 7, 7230000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2030, 4, 3617000.00, 0.1000),
+ (2030, 10, 7958000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2084, 4, 3617000.00, 0.1000),
+ (2084, 13, 11938000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2273, 4, 4691000.00, 0.1000),
+ (2273, 7, 6568000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2309, 4, 4691000.00, 0.1000),
+ (2309, 10, 10321000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2430, 4, 3617000.00, 0.1000),
+ (2430, 13, 11938000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2485, 4, 3617000.00, 0.1000),
+ (2485, 7, 5064000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2673, 4, 4969000.00, 0.1000),
+ (2673, 10, 10932000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2709, 4, 4969000.00, 0.1000),
+ (2709, 13, 16398000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2830, 4, 3550000.00, 0.1000),
+ (2830, 7, 4971000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (2885, 4, 3550000.00, 0.1000),
+ (2885, 10, 7811000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3073, 4, 4511000.00, 0.1000),
+ (3073, 13, 14886000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3109, 4, 4511000.00, 0.1000),
+ (3109, 7, 6315000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3230, 4, 3762000.00, 0.1000),
+ (3230, 10, 8277000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3285, 4, 3762000.00, 0.1000),
+ (3285, 13, 12415000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3630, 4, 3416000.00, 0.1000),
+ (3630, 7, 4783000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3673, 4, 4601000.00, 0.1000),
+ (3673, 10, 10122000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (3686, 4, 3416000.00, 0.1000),
+ (3686, 13, 11274000.00, 0.1000),
+ (3709, 4, 4601000.00, 0.1000),
+ (3709, 7, 6442000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4030, 4, 3617000.00, 0.1000),
+ (4030, 10, 7958000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4073, 4, 4872000.00, 0.1000),
+ (4073, 13, 16077000.00, 0.1000),
+ (4086, 4, 3617000.00, 0.1000),
+ (4086, 7, 5064000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4109, 4, 4872000.00, 0.1000),
+ (4109, 10, 10718000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4430, 4, 3617000.00, 0.1000),
+ (4430, 13, 11938000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4473, 4, 4872000.00, 0.1000),
+ (4473, 7, 6820000.00, 0.1000),
+ (4485, 4, 3617000.00, 0.1000),
+ (4485, 10, 7958000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4509, 4, 4872000.00, 0.1000),
+ (4509, 13, 16077000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4873, 4, 5164000.00, 0.1000),
+ (4873, 7, 7230000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (4909, 4, 5164000.00, 0.1000),
+ (4909, 10, 11361000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5030, 4, 3350000.00, 0.1000),
+ (5030, 13, 11053000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5086, 4, 3350000.00, 0.1000),
+ (5086, 7, 4689000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5273, 4, 4691000.00, 0.1000),
+ (5273, 10, 10321000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5309, 4, 4691000.00, 0.1000),
+ (5309, 13, 15481000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5430, 4, 3907000.00, 0.1000),
+ (5430, 7, 5470000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5486, 4, 3907000.00, 0.1000),
+ (5486, 10, 8595000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5673, 4, 4601000.00, 0.1000),
+ (5673, 13, 15184000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5709, 4, 4601000.00, 0.1000),
+ (5709, 7, 6442000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5830, 4, 3550000.00, 0.1000),
+ (5830, 10, 7811000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (5885, 4, 3550000.00, 0.1000),
+ (5885, 13, 11717000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (6073, 4, 4872000.00, 0.1000),
+ (6073, 7, 6820000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (6109, 4, 4872000.00, 0.1000),
+ (6109, 10, 10718000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (6226, 4, 3762000.00, 0.1000),
+ (6226, 13, 12415000.00, 0.1000);
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (6266, 4, 3762000.00, 0.1000),
+ (6266, 7, 5267000.00, 0.1000);
+
+ INSERT INTO dbo.[FlightFares] ([FlightID], [FareClassID], [BasePrice], [TaxRate]) VALUES
+ (7001, 1, 1900000.00, 0.1000),
+ (7001, 3, 3600000.00, 0.1000),
+ (7002, 1, 1709000.00, 0.1000),
+ (7002, 3, 3773000.00, 0.1000),
+ (7003, 1, 1709000.00, 0.1000),
+ (7003, 3, 3773000.00, 0.1000),
+ (7004, 1, 1900000.00, 0.1000),
+ (7004, 3, 3600000.00, 0.1000),
+ (7005, 1, 12258000.00, 0.1000),
+ (7005, 3, 26968000.00, 0.1000),
+ (7006, 1, 12258000.00, 0.1000),
+ (7006, 3, 26968000.00, 0.1000),
+ (7007, 1, 11587000.00, 0.1000),
+ (7007, 3, 25490000.00, 0.1000),
+ (7008, 1, 11587000.00, 0.1000),
+ (7008, 3, 25490000.00, 0.1000),
+ (7009, 1, 10937000.00, 0.1000),
+ (7009, 3, 24060000.00, 0.1000),
+ (7010, 1, 10937000.00, 0.1000),
+ (7010, 3, 24060000.00, 0.1000),
+ (7011, 1, 10190000.00, 0.1000),
+ (7011, 3, 22418000.00, 0.1000),
+ (7012, 1, 10190000.00, 0.1000),
+ (7012, 3, 22418000.00, 0.1000),
+ (7013, 1, 9126000.00, 0.1000),
+ (7013, 3, 20077000.00, 0.1000),
+ (7014, 1, 9126000.00, 0.1000),
+ (7014, 3, 20077000.00, 0.1000),
+ (7015, 1, 8887000.00, 0.1000),
+ (7015, 3, 19552000.00, 0.1000),
+ (7016, 1, 8887000.00, 0.1000),
+ (7016, 3, 19552000.00, 0.1000),
+ (7017, 1, 8536000.00, 0.1000),
+ (7017, 3, 18779000.00, 0.1000),
+ (7018, 1, 8536000.00, 0.1000),
+ (7018, 3, 18779000.00, 0.1000),
+ (7019, 1, 7962000.00, 0.1000),
+ (7019, 3, 17517000.00, 0.1000),
+ (7020, 1, 7962000.00, 0.1000),
+ (7020, 3, 17517000.00, 0.1000),
+ (7021, 1, 7751000.00, 0.1000),
+ (7021, 3, 17052000.00, 0.1000),
+ (7022, 1, 7751000.00, 0.1000),
+ (7022, 3, 17052000.00, 0.1000),
+ (7023, 1, 7661000.00, 0.1000),
+ (7023, 3, 16854000.00, 0.1000),
+ (7024, 1, 7661000.00, 0.1000),
+ (7024, 3, 16854000.00, 0.1000),
+ (7025, 1, 6019000.00, 0.1000),
+ (7025, 3, 13242000.00, 0.1000),
+ (7026, 1, 6019000.00, 0.1000),
+ (7026, 3, 13242000.00, 0.1000),
+ (7027, 1, 5836000.00, 0.1000),
+ (7027, 3, 12839000.00, 0.1000),
+ (7028, 1, 5836000.00, 0.1000),
+ (7028, 3, 12839000.00, 0.1000),
+ (7029, 1, 4503000.00, 0.1000),
+ (7029, 3, 9907000.00, 0.1000),
+ (7030, 1, 4503000.00, 0.1000),
+ (7030, 3, 9907000.00, 0.1000),
+ (7031, 1, 4380000.00, 0.1000),
+ (7031, 3, 9637000.00, 0.1000),
+ (7032, 1, 4380000.00, 0.1000),
+ (7032, 3, 9637000.00, 0.1000),
+ (7033, 1, 4214000.00, 0.1000),
+ (7033, 3, 9271000.00, 0.1000),
+ (7034, 1, 4214000.00, 0.1000),
+ (7034, 3, 9271000.00, 0.1000),
+ (7035, 1, 4067000.00, 0.1000),
+ (7035, 3, 8947000.00, 0.1000),
+ (7036, 1, 4067000.00, 0.1000),
+ (7036, 3, 8947000.00, 0.1000),
+ (7037, 1, 4113000.00, 0.1000),
+ (7037, 3, 9048000.00, 0.1000),
+ (7038, 1, 4113000.00, 0.1000),
+ (7038, 3, 9048000.00, 0.1000),
+ (7039, 1, 3826000.00, 0.1000),
+ (7039, 3, 8416000.00, 0.1000),
+ (7040, 1, 3826000.00, 0.1000),
+ (7040, 3, 8416000.00, 0.1000),
+ (7041, 1, 3858000.00, 0.1000),
+ (7041, 3, 8488000.00, 0.1000),
+ (7042, 1, 3858000.00, 0.1000),
+ (7042, 3, 8488000.00, 0.1000),
+ (7043, 1, 3473000.00, 0.1000),
+ (7043, 3, 7641000.00, 0.1000),
+ (7044, 1, 3473000.00, 0.1000),
+ (7044, 3, 7641000.00, 0.1000),
+ (7045, 1, 3576000.00, 0.1000),
+ (7045, 3, 7867000.00, 0.1000),
+ (7046, 1, 3576000.00, 0.1000),
+ (7046, 3, 7867000.00, 0.1000),
+ (7047, 1, 3391000.00, 0.1000),
+ (7047, 3, 7460000.00, 0.1000),
+ (7048, 1, 3391000.00, 0.1000),
+ (7048, 3, 7460000.00, 0.1000),
+ (7049, 1, 3196000.00, 0.1000),
+ (7049, 3, 7031000.00, 0.1000),
+ (7050, 1, 3196000.00, 0.1000),
+ (7050, 3, 7031000.00, 0.1000),
+ (7051, 1, 3141000.00, 0.1000),
+ (7051, 3, 6911000.00, 0.1000),
+ (7052, 1, 3141000.00, 0.1000),
+ (7052, 3, 6911000.00, 0.1000),
+ (7053, 1, 3127000.00, 0.1000),
+ (7053, 3, 6879000.00, 0.1000),
+ (7054, 1, 3127000.00, 0.1000),
+ (7054, 3, 6879000.00, 0.1000),
+ (7055, 1, 3039000.00, 0.1000),
+ (7055, 3, 6686000.00, 0.1000),
+ (7056, 1, 3039000.00, 0.1000),
+ (7056, 3, 6686000.00, 0.1000),
+ (7057, 1, 2956000.00, 0.1000),
+ (7057, 3, 6504000.00, 0.1000),
+ (7058, 1, 2956000.00, 0.1000),
+ (7058, 3, 6504000.00, 0.1000),
+ (7059, 1, 2453000.00, 0.1000),
+ (7059, 3, 5396000.00, 0.1000),
+ (7060, 1, 2453000.00, 0.1000),
+ (7060, 3, 5396000.00, 0.1000),
+ (7061, 1, 2382000.00, 0.1000),
+ (7061, 3, 5240000.00, 0.1000),
+ (7062, 1, 2382000.00, 0.1000),
+ (7062, 3, 5240000.00, 0.1000),
+ (7063, 1, 2272000.00, 0.1000),
+ (7063, 3, 4999000.00, 0.1000),
+ (7064, 1, 2272000.00, 0.1000),
+ (7064, 3, 4999000.00, 0.1000),
+ (7065, 1, 1745000.00, 0.1000),
+ (7065, 3, 3827000.00, 0.1000),
+ (7066, 1, 1745000.00, 0.1000),
+ (7066, 3, 3827000.00, 0.1000),
+ (7067, 1, 1664000.00, 0.1000),
+ (7067, 3, 3655000.00, 0.1000),
+ (7068, 1, 1664000.00, 0.1000),
+ (7068, 3, 3655000.00, 0.1000),
+ (7069, 1, 1555000.00, 0.1000),
+ (7069, 3, 3418000.00, 0.1000),
+ (7070, 1, 1555000.00, 0.1000),
+ (7070, 3, 3418000.00, 0.1000),
+ (7071, 1, 1618000.00, 0.1000),
+ (7071, 3, 3573000.00, 0.1000),
+ (7072, 1, 1618000.00, 0.1000),
+ (7072, 3, 3573000.00, 0.1000),
+ (7073, 1, 1309000.00, 0.1000),
+ (7073, 3, 2891000.00, 0.1000),
+ (7074, 1, 1309000.00, 0.1000),
+ (7074, 3, 2891000.00, 0.1000),
+ (7075, 1, 1027000.00, 0.1000),
+ (7075, 3, 2273000.00, 0.1000),
+ (7076, 1, 1027000.00, 0.1000),
+ (7076, 3, 2273000.00, 0.1000);
+
+ -- Passengers: 40 dong.
+ SET IDENTITY_INSERT dbo.[Passengers] ON;
+ INSERT INTO dbo.[Passengers] ([PassengerID], [FullName], [DateOfBirth], [DocumentNumber]) VALUES
+ (1, N'Hành khách mẫu 1', '1998-05-20', N'DEMO100001'),
+ (2, N'Hành khách mẫu 2', '1998-05-20', N'DEMO100002'),
+ (3, N'Hành khách mẫu 3', '1998-05-20', N'DEMO100003'),
+ (4, N'Hành khách mẫu 4', '1998-05-20', N'DEMO100004'),
+ (5, N'Hành khách mẫu 5', '1998-05-20', N'DEMO100005'),
+ (6, N'Hành khách mẫu 6', '1998-05-20', N'DEMO100006'),
+ (7, N'Hành khách mẫu 7', '1998-05-20', N'DEMO100007'),
+ (8, N'Hành khách mẫu 8', '1998-05-20', N'DEMO100008'),
+ (9, N'Hành khách mẫu 9', '1998-05-20', N'DEMO100009'),
+ (10, N'Hành khách mẫu 10', '1998-05-20', N'DEMO100010'),
+ (11, N'Hành khách mẫu 11', '1998-05-20', N'DEMO100011'),
+ (12, N'Hành khách mẫu 12', '1998-05-20', N'DEMO100012'),
+ (13, N'Hành khách mẫu 13', '1998-05-20', N'DEMO100013'),
+ (14, N'Hành khách mẫu 14', '1998-05-20', N'DEMO100014'),
+ (15, N'Hành khách mẫu 15', '1998-05-20', N'DEMO100015'),
+ (16, N'Hành khách mẫu 16', '1998-05-20', N'DEMO100016'),
+ (17, N'Hành khách mẫu 17', '1998-05-20', N'DEMO100017'),
+ (18, N'Hành khách mẫu 18', '1998-05-20', N'DEMO100018'),
+ (19, N'Hành khách mẫu 19', '1998-05-20', N'DEMO100019'),
+ (20, N'Hành khách mẫu 20', '1998-05-20', N'DEMO100020'),
+ (21, N'Hành khách mẫu 21', '1998-05-20', N'DEMO100021'),
+ (22, N'Hành khách mẫu 22', '1998-05-20', N'DEMO100022'),
+ (23, N'Hành khách mẫu 23', '1998-05-20', N'DEMO100023'),
+ (24, N'Hành khách mẫu 24', '1998-05-20', N'DEMO100024'),
+ (25, N'Hành khách mẫu 25', '1998-05-20', N'DEMO100025'),
+ (26, N'Hành khách mẫu 26', '1998-05-20', N'DEMO100026'),
+ (27, N'Hành khách mẫu 27', '1998-05-20', N'DEMO100027'),
+ (28, N'Hành khách mẫu 28', '1998-05-20', N'DEMO100028'),
+ (29, N'Hành khách mẫu 29', '1998-05-20', N'DEMO100029'),
+ (30, N'Hành khách mẫu 30', '1998-05-20', N'DEMO100030'),
+ (31, N'Hành khách mẫu 31', '1998-05-20', N'DEMO100031'),
+ (32, N'Hành khách mẫu 32', '1998-05-20', N'DEMO100032'),
+ (33, N'Hành khách mẫu 33', '1998-05-20', N'DEMO100033'),
+ (34, N'Hành khách mẫu 34', '1998-05-20', N'DEMO100034'),
+ (35, N'Hành khách mẫu 35', '1998-05-20', N'DEMO100035'),
+ (36, N'Hành khách mẫu 36', '1998-05-20', N'DEMO100036'),
+ (37, N'Hành khách mẫu 37', '1998-05-20', N'DEMO100037'),
+ (38, N'Hành khách mẫu 38', '1998-05-20', N'DEMO100038'),
+ (39, N'Hành khách mẫu 39', '1998-05-20', N'DEMO100039'),
+ (40, N'Hành khách mẫu 40', '1998-05-20', N'DEMO100040');
+ SET IDENTITY_INSERT dbo.[Passengers] OFF;
+
+ -- Bookings: 40 dong.
+ SET IDENTITY_INSERT dbo.[Bookings] ON;
+ INSERT INTO dbo.[Bookings] ([BookingID], [PNR], [UserID], [Status], [CreatedAt], [ExpiresAt]) VALUES
+ (1, '43E74A6A', 1, 'CONFIRMED', '2026-10-28T16:57:31', '2026-10-28T17:07:31'),
+ (2, '02E5B029', 2, 'CONFIRMED', '2026-10-27T16:57:31', '2026-10-27T17:07:31'),
+ (3, 'F0506A23', 3, 'CONFIRMED', '2026-10-26T16:57:31', '2026-10-26T17:07:31'),
+ (4, '30508B3A', 4, 'CANCELLED', '2026-10-25T16:57:31', '2026-10-25T17:07:31'),
+ (5, '66A19723', 5, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (6, '7694689F', 6, 'CONFIRMED', '2026-10-23T16:57:31', '2026-10-23T17:07:31'),
+ (7, '0A8B6D8B', 7, 'CONFIRMED', '2026-10-22T16:57:31', '2026-10-22T17:07:31'),
+ (8, '9B63D3CC', 8, 'CANCELLED', '2026-10-21T16:57:31', '2026-10-21T17:07:31'),
+ (9, 'C36DB541', 9, 'CONFIRMED', '2026-10-20T16:57:31', '2026-10-20T17:07:31'),
+ (10, 'EF3A7741', 10, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (11, '030C51CF', 11, 'CONFIRMED', '2026-10-18T16:57:31', '2026-10-18T17:07:31'),
+ (12, '4E11A854', 12, 'CANCELLED', '2026-10-17T16:57:31', '2026-10-17T17:07:31'),
+ (13, '7F24CDE8', 13, 'CONFIRMED', '2026-10-16T16:57:31', '2026-10-16T17:07:31'),
+ (14, '8EB31795', 14, 'CONFIRMED', '2026-10-15T16:57:31', '2026-10-15T17:07:31'),
+ (15, '74C2426C', 15, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (16, '33E97E80', 16, 'CANCELLED', '2026-10-13T16:57:31', '2026-10-13T17:07:31'),
+ (17, '9032ADF7', 17, 'CONFIRMED', '2026-10-12T16:57:31', '2026-10-12T17:07:31'),
+ (18, '8A0CE200', 18, 'CONFIRMED', '2026-10-11T16:57:31', '2026-10-11T17:07:31'),
+ (19, '5459E3C0', 19, 'CONFIRMED', '2026-10-10T16:57:31', '2026-10-10T17:07:31'),
+ (20, 'D57D05D9', 20, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (21, 'A54D388D', 21, 'CONFIRMED', '2026-10-08T16:57:31', '2026-10-08T17:07:31'),
+ (22, 'BAAC2EFB', 22, 'CONFIRMED', '2026-10-07T16:57:31', '2026-10-07T17:07:31'),
+ (23, 'ABD98ADB', 23, 'CONFIRMED', '2026-10-06T16:57:31', '2026-10-06T17:07:31'),
+ (24, '0F6F743A', 24, 'CANCELLED', '2026-10-05T16:57:31', '2026-10-05T17:07:31'),
+ (25, '260F4581', 25, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (26, 'B3A9B3C8', 26, 'CONFIRMED', '2026-10-03T16:57:31', '2026-10-03T17:07:31'),
+ (27, 'CA29DA3B', 27, 'CONFIRMED', '2026-10-02T16:57:31', '2026-10-02T17:07:31'),
+ (28, '4E020C94', 28, 'CANCELLED', '2026-10-29T16:57:31', '2026-10-29T17:07:31'),
+ (29, '2816F5D1', 29, 'CONFIRMED', '2026-10-28T16:57:31', '2026-10-28T17:07:31'),
+ (30, '0BA743D2', 30, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (31, 'C6F94C35', 31, 'CONFIRMED', '2026-10-26T16:57:31', '2026-10-26T17:07:31'),
+ (32, '9D1596AA', 32, 'CANCELLED', '2026-10-25T16:57:31', '2026-10-25T17:07:31'),
+ (33, '9117B30E', 33, 'CONFIRMED', '2026-10-24T16:57:31', '2026-10-24T17:07:31'),
+ (34, '86BDAC4D', 34, 'CONFIRMED', '2026-10-23T16:57:31', '2026-10-23T17:07:31'),
+ (35, 'F31FE154', 35, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31'),
+ (36, 'F08AA656', 36, 'CANCELLED', '2026-10-21T16:57:31', '2026-10-21T17:07:31'),
+ (37, '490EA0BA', 37, 'CONFIRMED', '2026-10-20T16:57:31', '2026-10-20T17:07:31'),
+ (38, '4D6F570B', 38, 'CONFIRMED', '2026-10-19T16:57:31', '2026-10-19T17:07:31'),
+ (39, 'F08B6A47', 39, 'CONFIRMED', '2026-10-18T16:57:31', '2026-10-18T17:07:31'),
+ (40, 'FFD344D3', 40, 'HELD', '2026-10-30T16:57:31', '2026-10-30T17:07:31');
+ SET IDENTITY_INSERT dbo.[Bookings] OFF;
+
+ -- BookingSegments: 40 dong.
+ SET IDENTITY_INSERT dbo.[BookingSegments] ON;
+ INSERT INTO dbo.[BookingSegments] ([BookingSegmentID], [BookingID], [FlightID], [SegmentOrder]) VALUES
+ (1, 1, 1, 1),
+ (2, 2, 2, 1),
+ (3, 3, 3, 1),
+ (4, 4, 4, 1),
+ (5, 5, 5, 1),
+ (6, 6, 6, 1),
+ (7, 7, 7, 1),
+ (8, 8, 8, 1),
+ (9, 9, 9, 1),
+ (10, 10, 10, 1),
+ (11, 11, 11, 1),
+ (12, 12, 12, 1),
+ (13, 13, 13, 1),
+ (14, 14, 14, 1),
+ (15, 15, 15, 1),
+ (16, 16, 16, 1),
+ (17, 17, 17, 1),
+ (18, 18, 18, 1),
+ (19, 19, 19, 1),
+ (20, 20, 20, 1),
+ (21, 21, 21, 1),
+ (22, 22, 22, 1),
+ (23, 23, 23, 1),
+ (24, 24, 24, 1),
+ (25, 25, 25, 1),
+ (26, 26, 26, 1),
+ (27, 27, 27, 1),
+ (28, 28, 28, 1),
+ (29, 29, 29, 1),
+ (30, 30, 30, 1),
+ (31, 31, 31, 1),
+ (32, 32, 32, 1),
+ (33, 33, 33, 1),
+ (34, 34, 34, 1),
+ (35, 35, 35, 1),
+ (36, 36, 36, 1),
+ (37, 37, 37, 1),
+ (38, 38, 38, 1),
+ (39, 39, 39, 1),
+ (40, 40, 40, 1);
+ SET IDENTITY_INSERT dbo.[BookingSegments] OFF;
+
+ -- BookingPassengers: 40 dong.
+ SET IDENTITY_INSERT dbo.[BookingPassengers] ON;
+ INSERT INTO dbo.[BookingPassengers] ([BookingPassengerID], [BookingID], [PassengerID]) VALUES
+ (1, 1, 1),
+ (2, 2, 2),
+ (3, 3, 3),
+ (4, 4, 4),
+ (5, 5, 5),
+ (6, 6, 6),
+ (7, 7, 7),
+ (8, 8, 8),
+ (9, 9, 9),
+ (10, 10, 10),
+ (11, 11, 11),
+ (12, 12, 12),
+ (13, 13, 13),
+ (14, 14, 14),
+ (15, 15, 15),
+ (16, 16, 16),
+ (17, 17, 17),
+ (18, 18, 18),
+ (19, 19, 19),
+ (20, 20, 20),
+ (21, 21, 21),
+ (22, 22, 22),
+ (23, 23, 23),
+ (24, 24, 24),
+ (25, 25, 25),
+ (26, 26, 26),
+ (27, 27, 27),
+ (28, 28, 28),
+ (29, 29, 29),
+ (30, 30, 30),
+ (31, 31, 31),
+ (32, 32, 32),
+ (33, 33, 33),
+ (34, 34, 34),
+ (35, 35, 35),
+ (36, 36, 36),
+ (37, 37, 37),
+ (38, 38, 38),
+ (39, 39, 39),
+ (40, 40, 40);
+ SET IDENTITY_INSERT dbo.[BookingPassengers] OFF;
+
+ -- FlightSeatAssignments: 40 dong.
+ SET IDENTITY_INSERT dbo.[FlightSeatAssignments] ON;
+ INSERT INTO dbo.[FlightSeatAssignments] ([AssignmentID], [FlightID], [SeatID], [IsActive]) VALUES
+ (1, 1, 20, 1),
+ (2, 2, 20, 1),
+ (3, 3, 152, 1),
+ (4, 4, 152, 0),
+ (5, 5, 20, 1),
+ (6, 6, 20, 1),
+ (7, 7, 152, 1),
+ (8, 8, 152, 0),
+ (9, 9, 20, 1),
+ (10, 10, 20, 1),
+ (11, 11, 152, 1),
+ (12, 12, 152, 0),
+ (13, 13, 20, 1),
+ (14, 14, 20, 1),
+ (15, 15, 152, 1),
+ (16, 16, 152, 0),
+ (17, 17, 20, 1),
+ (18, 18, 20, 1),
+ (19, 19, 152, 1),
+ (20, 20, 152, 1),
+ (21, 21, 20, 1),
+ (22, 22, 20, 1),
+ (23, 23, 152, 1),
+ (24, 24, 152, 0),
+ (25, 25, 20, 1),
+ (26, 26, 20, 1),
+ (27, 27, 152, 1),
+ (28, 28, 152, 0),
+ (29, 29, 20, 1),
+ (30, 30, 20, 1),
+ (31, 31, 152, 1),
+ (32, 32, 152, 0),
+ (33, 33, 20, 1),
+ (34, 34, 20, 1),
+ (35, 35, 152, 1),
+ (36, 36, 152, 0),
+ (37, 37, 20, 1),
+ (38, 38, 20, 1),
+ (39, 39, 152, 1),
+ (40, 40, 152, 1);
+ SET IDENTITY_INSERT dbo.[FlightSeatAssignments] OFF;
+
+ -- Tickets: 40 dong.
+ SET IDENTITY_INSERT dbo.[Tickets] ON;
+ INSERT INTO dbo.[Tickets] ([TicketID], [AssignmentID], [TicketNumber], [BookingPassengerID], [BookingSegmentID], [FareClassID], [BaseFare], [TaxAmount], [SeatFee], [BaggageKg], [RefundPercent], [Status]) VALUES
+ (1, 1, 'AFBFBC7DCD3CA5AB54', 1, 1, 1, 1700000.00, 170000.00, 0.00, 7, 0.00, 'VALID'),
+ (2, 2, 'AFB7A6F3E197D99E2E', 2, 2, 2, 2130000.00, 213000.00, 0.00, 20, 80.00, 'VALID'),
+ (3, 3, 'AF98E343BE5DD64A58', 3, 3, 1, 1300000.00, 130000.00, 0.00, 7, 0.00, 'VALID'),
+ (4, 4, 'AF80DBD0F638004928', 4, 4, 2, 1730000.00, 173000.00, 0.00, 20, 80.00, 'VOID'),
+ (5, 5, 'AFBF5D4404465E73A6', 5, 5, 1, 1900000.00, 190000.00, 0.00, 7, 0.00, 'PENDING'),
+ (6, 6, 'AFB535B846A08C73DD', 6, 6, 2, 2330000.00, 233000.00, 0.00, 20, 80.00, 'VALID'),
+ (7, 7, 'AF85EC6CE0BD0F6055', 7, 7, 1, 1500000.00, 150000.00, 0.00, 7, 0.00, 'VALID'),
+ (8, 8, 'AFA9554A48052AB1FE', 8, 8, 2, 1580000.00, 158000.00, 0.00, 20, 80.00, 'VOID'),
+ (9, 9, 'AFB171E6EDFB9B77FB', 9, 9, 1, 1750000.00, 175000.00, 0.00, 7, 0.00, 'VALID'),
+ (10, 10, 'AF888B75A58E82BA09', 10, 10, 2, 2180000.00, 218000.00, 0.00, 20, 80.00, 'PENDING'),
+ (11, 11, 'AF8A3341C8FF691869', 11, 11, 1, 1350000.00, 135000.00, 0.00, 7, 0.00, 'VALID'),
+ (12, 12, 'AF8447462A71EA8CBB', 12, 12, 2, 1780000.00, 178000.00, 0.00, 20, 80.00, 'VOID'),
+ (13, 13, 'AF8B06AEE775323554', 13, 13, 1, 1950000.00, 195000.00, 0.00, 7, 0.00, 'VALID'),
+ (14, 14, 'AF99B7E76D60C27CD5', 14, 14, 2, 2380000.00, 238000.00, 0.00, 20, 80.00, 'VALID'),
+ (15, 15, 'AFA4476446B1C3F94D', 15, 15, 1, 1200000.00, 120000.00, 0.00, 7, 0.00, 'PENDING'),
+ (16, 16, 'AF9DAB1B7836F210E2', 16, 16, 2, 1630000.00, 163000.00, 0.00, 20, 80.00, 'VOID'),
+ (17, 17, 'AFA4CB3A74F9708BB6', 17, 17, 1, 1800000.00, 180000.00, 0.00, 7, 0.00, 'VALID'),
+ (18, 18, 'AF89DB6C9281DDA292', 18, 18, 2, 2230000.00, 223000.00, 0.00, 20, 80.00, 'VALID'),
+ (19, 19, 'AF8FBBA5112D2B215D', 19, 19, 1, 1400000.00, 140000.00, 0.00, 7, 0.00, 'VALID'),
+ (20, 20, 'AF8A3CD9DD982B378A', 20, 20, 2, 1830000.00, 183000.00, 0.00, 20, 80.00, 'PENDING'),
+ (21, 21, 'AFBB81D477D2BDF227', 21, 21, 1, 2000000.00, 200000.00, 0.00, 7, 0.00, 'VALID'),
+ (22, 22, 'AFA76A8AFBA89FD54D', 22, 22, 2, 2080000.00, 208000.00, 0.00, 20, 80.00, 'VALID'),
+ (23, 23, 'AF9CC4FFDA817A6874', 23, 23, 1, 1250000.00, 125000.00, 0.00, 7, 0.00, 'VALID'),
+ (24, 24, 'AFBC6F9B07591F2876', 24, 24, 2, 1680000.00, 168000.00, 0.00, 20, 80.00, 'VOID'),
+ (25, 25, 'AF8E588A4F851E43EB', 25, 25, 1, 1850000.00, 185000.00, 0.00, 7, 0.00, 'PENDING'),
+ (26, 26, 'AFA3441D73DB3D6D2A', 26, 26, 2, 2280000.00, 228000.00, 0.00, 20, 80.00, 'VALID'),
+ (27, 27, 'AFAF40183B03FDD650', 27, 27, 1, 1450000.00, 145000.00, 0.00, 7, 0.00, 'VALID'),
+ (28, 28, 'AF8813DE0EC0851961', 28, 28, 2, 1880000.00, 188000.00, 0.00, 20, 80.00, 'VOID'),
+ (29, 29, 'AFA390E5FAB6E87F31', 29, 29, 1, 1700000.00, 170000.00, 0.00, 7, 0.00, 'VALID'),
+ (30, 30, 'AFBE1B7A786484E930', 30, 30, 2, 2130000.00, 213000.00, 0.00, 20, 80.00, 'PENDING'),
+ (31, 31, 'AF87FB0E52EF7A4C00', 31, 31, 1, 1300000.00, 130000.00, 0.00, 7, 0.00, 'VALID'),
+ (32, 32, 'AF9621A7F0BB27139B', 32, 32, 2, 1730000.00, 173000.00, 0.00, 20, 80.00, 'VOID'),
+ (33, 33, 'AF8495DD6E804547D5', 33, 33, 1, 1900000.00, 190000.00, 0.00, 7, 0.00, 'VALID'),
+ (34, 34, 'AF908C25AD80B89391', 34, 34, 2, 2330000.00, 233000.00, 0.00, 20, 80.00, 'VALID'),
+ (35, 35, 'AF85F4D76B9A7D2BC7', 35, 35, 1, 1500000.00, 150000.00, 0.00, 7, 0.00, 'PENDING'),
+ (36, 36, 'AFB7D9D303BA726C94', 36, 36, 2, 1580000.00, 158000.00, 0.00, 20, 80.00, 'VOID'),
+ (37, 37, 'AFA1D56E84D7A8E8E4', 37, 37, 1, 1750000.00, 175000.00, 0.00, 7, 0.00, 'VALID'),
+ (38, 38, 'AFAF1F3162AF9358B7', 38, 38, 2, 2180000.00, 218000.00, 0.00, 20, 80.00, 'VALID'),
+ (39, 39, 'AFBE7C08634B34FCD9', 39, 39, 1, 1350000.00, 135000.00, 0.00, 7, 0.00, 'VALID'),
+ (40, 40, 'AFB5823B0831DBE7C7', 40, 40, 2, 1780000.00, 178000.00, 0.00, 20, 80.00, 'PENDING');
+ SET IDENTITY_INSERT dbo.[Tickets] OFF;
+
+ -- Payments: 48 dong.
+ SET IDENTITY_INSERT dbo.[Payments] ON;
+ INSERT INTO dbo.[Payments] ([PaymentID], [BookingID], [IdempotencyKey], [Amount], [Kind], [Status], [CreatedAt]) VALUES
+ (1, 1, 'seed-payment-000001', 1870000.00, 'CHARGE', 'SUCCESS', '2026-10-28T16:59:31'),
+ (2, 2, 'seed-payment-000002', 2343000.00, 'CHARGE', 'SUCCESS', '2026-10-27T16:59:31'),
+ (3, 3, 'seed-payment-000003', 1430000.00, 'CHARGE', 'SUCCESS', '2026-10-26T16:59:31'),
+ (4, 4, 'seed-payment-000004', 1903000.00, 'CHARGE', 'SUCCESS', '2026-10-25T16:59:31'),
+ (5, 4, 'refund-booking-4', 1522400.00, 'REFUND', 'SUCCESS', '2026-10-25T17:02:31'),
+ (6, 5, 'seed-payment-000005', 2090000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (7, 6, 'seed-payment-000006', 2563000.00, 'CHARGE', 'SUCCESS', '2026-10-23T16:59:31'),
+ (8, 7, 'seed-payment-000007', 1650000.00, 'CHARGE', 'SUCCESS', '2026-10-22T16:59:31'),
+ (9, 8, 'seed-payment-000008', 1738000.00, 'CHARGE', 'SUCCESS', '2026-10-21T16:59:31'),
+ (10, 8, 'refund-booking-8', 1390400.00, 'REFUND', 'SUCCESS', '2026-10-21T17:02:31'),
+ (11, 9, 'seed-payment-000009', 1925000.00, 'CHARGE', 'SUCCESS', '2026-10-20T16:59:31'),
+ (12, 10, 'seed-payment-000010', 2398000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (13, 11, 'seed-payment-000011', 1485000.00, 'CHARGE', 'SUCCESS', '2026-10-18T16:59:31'),
+ (14, 12, 'seed-payment-000012', 1958000.00, 'CHARGE', 'SUCCESS', '2026-10-17T16:59:31'),
+ (15, 12, 'refund-booking-12', 1566400.00, 'REFUND', 'SUCCESS', '2026-10-17T17:02:31'),
+ (16, 13, 'seed-payment-000013', 2145000.00, 'CHARGE', 'SUCCESS', '2026-10-16T16:59:31'),
+ (17, 14, 'seed-payment-000014', 2618000.00, 'CHARGE', 'SUCCESS', '2026-10-15T16:59:31'),
+ (18, 15, 'seed-payment-000015', 1320000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (19, 16, 'seed-payment-000016', 1793000.00, 'CHARGE', 'SUCCESS', '2026-10-13T16:59:31'),
+ (20, 16, 'refund-booking-16', 1434400.00, 'REFUND', 'SUCCESS', '2026-10-13T17:02:31'),
+ (21, 17, 'seed-payment-000017', 1980000.00, 'CHARGE', 'SUCCESS', '2026-10-12T16:59:31'),
+ (22, 18, 'seed-payment-000018', 2453000.00, 'CHARGE', 'SUCCESS', '2026-10-11T16:59:31'),
+ (23, 19, 'seed-payment-000019', 1540000.00, 'CHARGE', 'SUCCESS', '2026-10-10T16:59:31'),
+ (24, 20, 'seed-payment-000020', 2013000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (25, 21, 'seed-payment-000021', 2200000.00, 'CHARGE', 'SUCCESS', '2026-10-08T16:59:31'),
+ (26, 22, 'seed-payment-000022', 2288000.00, 'CHARGE', 'SUCCESS', '2026-10-07T16:59:31'),
+ (27, 23, 'seed-payment-000023', 1375000.00, 'CHARGE', 'SUCCESS', '2026-10-06T16:59:31'),
+ (28, 24, 'seed-payment-000024', 1848000.00, 'CHARGE', 'SUCCESS', '2026-10-05T16:59:31'),
+ (29, 24, 'refund-booking-24', 1478400.00, 'REFUND', 'SUCCESS', '2026-10-05T17:02:31'),
+ (30, 25, 'seed-payment-000025', 2035000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (31, 26, 'seed-payment-000026', 2508000.00, 'CHARGE', 'SUCCESS', '2026-10-03T16:59:31'),
+ (32, 27, 'seed-payment-000027', 1595000.00, 'CHARGE', 'SUCCESS', '2026-10-02T16:59:31'),
+ (33, 28, 'seed-payment-000028', 2068000.00, 'CHARGE', 'SUCCESS', '2026-10-29T16:59:31'),
+ (34, 28, 'refund-booking-28', 1654400.00, 'REFUND', 'SUCCESS', '2026-10-29T17:02:31'),
+ (35, 29, 'seed-payment-000029', 1870000.00, 'CHARGE', 'SUCCESS', '2026-10-28T16:59:31'),
+ (36, 30, 'seed-payment-000030', 2343000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (37, 31, 'seed-payment-000031', 1430000.00, 'CHARGE', 'SUCCESS', '2026-10-26T16:59:31'),
+ (38, 32, 'seed-payment-000032', 1903000.00, 'CHARGE', 'SUCCESS', '2026-10-25T16:59:31'),
+ (39, 32, 'refund-booking-32', 1522400.00, 'REFUND', 'SUCCESS', '2026-10-25T17:02:31'),
+ (40, 33, 'seed-payment-000033', 2090000.00, 'CHARGE', 'SUCCESS', '2026-10-24T16:59:31'),
+ (41, 34, 'seed-payment-000034', 2563000.00, 'CHARGE', 'SUCCESS', '2026-10-23T16:59:31'),
+ (42, 35, 'seed-payment-000035', 1650000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31'),
+ (43, 36, 'seed-payment-000036', 1738000.00, 'CHARGE', 'SUCCESS', '2026-10-21T16:59:31'),
+ (44, 36, 'refund-booking-36', 1390400.00, 'REFUND', 'SUCCESS', '2026-10-21T17:02:31'),
+ (45, 37, 'seed-payment-000037', 1925000.00, 'CHARGE', 'SUCCESS', '2026-10-20T16:59:31'),
+ (46, 38, 'seed-payment-000038', 2398000.00, 'CHARGE', 'SUCCESS', '2026-10-19T16:59:31'),
+ (47, 39, 'seed-payment-000039', 1485000.00, 'CHARGE', 'SUCCESS', '2026-10-18T16:59:31'),
+ (48, 40, 'seed-payment-000040', 1958000.00, 'CHARGE', 'FAILED', '2026-10-30T16:57:31');
+ SET IDENTITY_INSERT dbo.[Payments] OFF;
+
+ -- AuditLogs: 100 dong.
+ SET IDENTITY_INSERT dbo.[AuditLogs] ON;
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (1, NULL, 'Flights', 1, 'CREATE', N'NEW -> SCHEDULED: AF100', '2026-10-30T16:57:30'),
+ (4, NULL, 'Flights', 4, 'CREATE', N'NEW -> SCHEDULED: AF103', '2026-10-30T16:57:30'),
+ (8, NULL, 'Flights', 8, 'CREATE', N'NEW -> SCHEDULED: AF103', '2026-10-30T16:57:30'),
+ (11, NULL, 'Flights', 11, 'CREATE', N'NEW -> SCHEDULED: AF102', '2026-10-30T16:57:30'),
+ (15, NULL, 'Flights', 15, 'CREATE', N'NEW -> SCHEDULED: AF102', '2026-10-30T16:57:30'),
+ (18, NULL, 'Flights', 18, 'CREATE', N'NEW -> SCHEDULED: AF101', '2026-10-30T16:57:30'),
+ (21, NULL, 'Flights', 21, 'CREATE', N'NEW -> SCHEDULED: AF100', '2026-10-30T16:57:30'),
+ (25, NULL, 'Flights', 25, 'CREATE', N'NEW -> SCHEDULED: AF100', '2026-10-30T16:57:30'),
+ (28, NULL, 'Flights', 28, 'CREATE', N'NEW -> SCHEDULED: AF103', '2026-10-30T16:57:30'),
+ (32, NULL, 'Flights', 32, 'CREATE', N'NEW -> SCHEDULED: AF103', '2026-10-30T16:57:30'),
+ (35, NULL, 'Flights', 35, 'CREATE', N'NEW -> SCHEDULED: AF102', '2026-10-30T16:57:30'),
+ (39, NULL, 'Flights', 39, 'CREATE', N'NEW -> SCHEDULED: AF102', '2026-10-30T16:57:30'),
+ (121, NULL, 'Bookings', 1, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (122, NULL, 'Payments', 1, 'CHARGE', N'SUCCESS: 1870000.00', '2026-10-30T16:57:31'),
+ (124, NULL, 'Bookings', 2, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (127, NULL, 'Bookings', 3, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (128, NULL, 'Payments', 3, 'CHARGE', N'SUCCESS: 1430000.00', '2026-10-30T16:57:31'),
+ (130, NULL, 'Bookings', 4, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (131, NULL, 'Payments', 4, 'CHARGE', N'SUCCESS: 1903000.00', '2026-10-30T16:57:31'),
+ (134, NULL, 'Bookings', 4, 'STATUS_CHANGE', N'CONFIRMED -> CANCELLED', '2026-10-30T16:57:31'),
+ (136, NULL, 'Payments', 6, 'CHARGE', N'FAILED: 2090000.00', '2026-10-30T16:57:31'),
+ (137, NULL, 'Bookings', 6, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (138, NULL, 'Payments', 7, 'CHARGE', N'SUCCESS: 2563000.00', '2026-10-30T16:57:31'),
+ (140, NULL, 'Bookings', 7, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (143, NULL, 'Bookings', 8, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (144, NULL, 'Payments', 9, 'CHARGE', N'SUCCESS: 1738000.00', '2026-10-30T16:57:31'),
+ (147, NULL, 'Bookings', 8, 'STATUS_CHANGE', N'CONFIRMED -> CANCELLED', '2026-10-30T16:57:31'),
+ (149, NULL, 'Payments', 11, 'CHARGE', N'SUCCESS: 1925000.00', '2026-10-30T16:57:31'),
+ (150, NULL, 'Bookings', 9, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (152, NULL, 'Payments', 12, 'CHARGE', N'FAILED: 2398000.00', '2026-10-30T16:57:31'),
+ (153, NULL, 'Bookings', 11, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (156, NULL, 'Bookings', 12, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (157, NULL, 'Payments', 14, 'CHARGE', N'SUCCESS: 1958000.00', '2026-10-30T16:57:31'),
+ (160, NULL, 'Bookings', 12, 'STATUS_CHANGE', N'CONFIRMED -> CANCELLED', '2026-10-30T16:57:31'),
+ (162, NULL, 'Payments', 16, 'CHARGE', N'SUCCESS: 2145000.00', '2026-10-30T16:57:31'),
+ (163, NULL, 'Bookings', 13, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (165, NULL, 'Payments', 17, 'CHARGE', N'SUCCESS: 2618000.00', '2026-10-30T16:57:31'),
+ (166, NULL, 'Bookings', 14, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (169, NULL, 'Bookings', 16, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (170, NULL, 'Payments', 19, 'CHARGE', N'SUCCESS: 1793000.00', '2026-10-30T16:57:31'),
+ (172, NULL, 'Payments', 20, 'REFUND', N'SUCCESS: 1434400.00', '2026-10-30T16:57:31'),
+ (173, NULL, 'Bookings', 16, 'STATUS_CHANGE', N'CONFIRMED -> CANCELLED', '2026-10-30T16:57:31'),
+ (176, NULL, 'Bookings', 17, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (178, NULL, 'Payments', 22, 'CHARGE', N'SUCCESS: 2453000.00', '2026-10-30T16:57:31'),
+ (179, NULL, 'Bookings', 18, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (182, NULL, 'Bookings', 19, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (184, NULL, 'Payments', 24, 'CHARGE', N'FAILED: 2013000.00', '2026-10-30T16:57:31'),
+ (186, NULL, 'Payments', 25, 'CHARGE', N'SUCCESS: 2200000.00', '2026-10-30T16:57:31'),
+ (187, NULL, 'Bookings', 21, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (190, NULL, 'Bookings', 22, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (192, NULL, 'Payments', 27, 'CHARGE', N'SUCCESS: 1375000.00', '2026-10-30T16:57:31'),
+ (193, NULL, 'Bookings', 23, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (196, NULL, 'Bookings', 24, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (197, NULL, 'Payments', 29, 'REFUND', N'SUCCESS: 1478400.00', '2026-10-30T16:57:31'),
+ (199, NULL, 'Bookings', 25, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (200, NULL, 'Payments', 30, 'CHARGE', N'FAILED: 2035000.00', '2026-10-30T16:57:31'),
+ (203, NULL, 'Bookings', 26, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (205, NULL, 'Payments', 32, 'CHARGE', N'SUCCESS: 1595000.00', '2026-10-30T16:57:31'),
+ (206, NULL, 'Bookings', 27, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (208, NULL, 'Payments', 33, 'CHARGE', N'SUCCESS: 2068000.00', '2026-10-30T16:57:31'),
+ (209, NULL, 'Bookings', 28, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (212, NULL, 'Bookings', 29, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (213, NULL, 'Payments', 35, 'CHARGE', N'SUCCESS: 1870000.00', '2026-10-30T16:57:31'),
+ (215, NULL, 'Bookings', 30, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (218, NULL, 'Payments', 37, 'CHARGE', N'SUCCESS: 1430000.00', '2026-10-30T16:57:31'),
+ (219, NULL, 'Bookings', 31, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (221, NULL, 'Payments', 38, 'CHARGE', N'SUCCESS: 1903000.00', '2026-10-30T16:57:31'),
+ (222, NULL, 'Bookings', 32, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (225, NULL, 'Bookings', 33, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (226, NULL, 'Payments', 40, 'CHARGE', N'SUCCESS: 2090000.00', '2026-10-30T16:57:31'),
+ (228, NULL, 'Bookings', 34, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (231, NULL, 'Bookings', 35, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (232, NULL, 'Payments', 42, 'CHARGE', N'FAILED: 1650000.00', '2026-10-30T16:57:31'),
+ (234, NULL, 'Payments', 43, 'CHARGE', N'SUCCESS: 1738000.00', '2026-10-30T16:57:31'),
+ (235, NULL, 'Bookings', 36, 'STATUS_CHANGE', N'HELD -> CONFIRMED', '2026-10-30T16:57:31'),
+ (238, NULL, 'Bookings', 37, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (239, NULL, 'Payments', 45, 'CHARGE', N'SUCCESS: 1925000.00', '2026-10-30T16:57:31'),
+ (241, NULL, 'Bookings', 38, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (242, NULL, 'Payments', 46, 'CHARGE', N'SUCCESS: 2398000.00', '2026-10-30T16:57:31'),
+ (244, NULL, 'Bookings', 39, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (247, NULL, 'Bookings', 40, 'CREATE', N'NEW -> HELD', '2026-10-30T16:57:31'),
+ (248, NULL, 'Payments', 48, 'CHARGE', N'FAILED: 1958000.00', '2026-10-30T16:57:31'),
+ (401, NULL, 'Flights', 273, 'CREATE', N'NEW -> SCHEDULED: IX1401', '2026-10-30T16:57:38');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (758, NULL, 'Flights', 630, 'CREATE', N'NEW -> SCHEDULED: IX0001', '2026-10-30T16:57:39');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (1158, NULL, 'Flights', 1030, 'CREATE', N'NEW -> SCHEDULED: IX0001', '2026-10-30T16:57:40'),
+ (1237, NULL, 'Flights', 1109, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:57:40');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (1637, NULL, 'Flights', 1509, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:57:42');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (2158, NULL, 'Flights', 2030, 'CREATE', N'NEW -> SCHEDULED: IX0001', '2026-10-30T16:57:44'),
+ (2437, NULL, 'Flights', 2309, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:57:46');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (2837, NULL, 'Flights', 2709, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:57:48');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (3201, NULL, 'Flights', 3073, 'CREATE', N'NEW -> SCHEDULED: IX1401', '2026-10-30T16:57:50');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (3758, NULL, 'Flights', 3630, 'CREATE', N'NEW -> SCHEDULED: IX0001', '2026-10-30T16:57:54'),
+ (3837, NULL, 'Flights', 3709, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:57:54');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (4237, NULL, 'Flights', 4109, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:57:57');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (4613, NULL, 'Flights', 4485, 'CREATE', N'NEW -> SCHEDULED: IX0002', '2026-10-30T16:58:00');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (5037, NULL, 'Flights', 4909, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:58:03'),
+ (5437, NULL, 'Flights', 5309, 'CREATE', N'NEW -> SCHEDULED: IX1402', '2026-10-30T16:58:07');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (5801, NULL, 'Flights', 5673, 'CREATE', N'NEW -> SCHEDULED: IX1401', '2026-10-30T16:58:10');
+ INSERT INTO dbo.[AuditLogs] ([AuditID], [ActorID], [Entity], [EntityID], [Action], [Details], [CreatedAt]) VALUES
+ (6201, NULL, 'Flights', 6073, 'CREATE', N'NEW -> SCHEDULED: IX1401', '2026-10-30T16:58:14'),
+ (6394, NULL, 'Flights', 6266, 'CREATE', N'NEW -> SCHEDULED: IX0002', '2026-10-30T16:58:16');
+ SET IDENTITY_INSERT dbo.[AuditLogs] OFF;
+ IF (SELECT COUNT(*) FROM dbo.[Roles])<>2
+  THROW 51000,N'So dong khong khop: Roles.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Users])<>40
+  THROW 51000,N'So dong khong khop: Users.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Airports])<>42
+  THROW 51000,N'So dong khong khop: Airports.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Airlines])<>3
+  THROW 51000,N'So dong khong khop: Airlines.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Aircraft])<>79
+  THROW 51000,N'So dong khong khop: Aircraft.',1;
+ IF (SELECT COUNT(*) FROM dbo.[FareClasses])<>15
+  THROW 51000,N'So dong khong khop: FareClasses.',1;
+ IF (SELECT COUNT(*) FROM dbo.[AircraftSeats])<>420
+  THROW 51000,N'So dong khong khop: AircraftSeats.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Flights])<>176
+  THROW 51000,N'So dong khong khop: Flights.',1;
+ IF (SELECT COUNT(*) FROM dbo.[FlightFares])<>352
+  THROW 51000,N'So dong khong khop: FlightFares.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Passengers])<>40
+  THROW 51000,N'So dong khong khop: Passengers.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Bookings])<>40
+  THROW 51000,N'So dong khong khop: Bookings.',1;
+ IF (SELECT COUNT(*) FROM dbo.[BookingSegments])<>40
+  THROW 51000,N'So dong khong khop: BookingSegments.',1;
+ IF (SELECT COUNT(*) FROM dbo.[BookingPassengers])<>40
+  THROW 51000,N'So dong khong khop: BookingPassengers.',1;
+ IF (SELECT COUNT(*) FROM dbo.[FlightSeatAssignments])<>40
+  THROW 51000,N'So dong khong khop: FlightSeatAssignments.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Tickets])<>40
+  THROW 51000,N'So dong khong khop: Tickets.',1;
+ IF (SELECT COUNT(*) FROM dbo.[Payments])<>48
+  THROW 51000,N'So dong khong khop: Payments.',1;
+ IF (SELECT COUNT(*) FROM dbo.[AuditLogs])<>100
+  THROW 51000,N'So dong khong khop: AuditLogs.',1;
+ COMMIT;
+ PRINT N'Da nap day du du lieu mau bang INSERT.';
+END TRY
+BEGIN CATCH
+ IF @@TRANCOUNT>0 ROLLBACK;
+ -- IDENTITY_INSERT la thiet lap cua phien, can tat ca khi giao dich bi loi.
+ SET IDENTITY_INSERT dbo.[Roles] OFF;
+ SET IDENTITY_INSERT dbo.[Users] OFF;
+ SET IDENTITY_INSERT dbo.[Airports] OFF;
+ SET IDENTITY_INSERT dbo.[Airlines] OFF;
+ SET IDENTITY_INSERT dbo.[Aircraft] OFF;
+ SET IDENTITY_INSERT dbo.[FareClasses] OFF;
+ SET IDENTITY_INSERT dbo.[AircraftSeats] OFF;
+ SET IDENTITY_INSERT dbo.[Flights] OFF;
+ SET IDENTITY_INSERT dbo.[Passengers] OFF;
+ SET IDENTITY_INSERT dbo.[Bookings] OFF;
+ SET IDENTITY_INSERT dbo.[BookingSegments] OFF;
+ SET IDENTITY_INSERT dbo.[BookingPassengers] OFF;
+ SET IDENTITY_INSERT dbo.[FlightSeatAssignments] OFF;
+ SET IDENTITY_INSERT dbo.[Tickets] OFF;
+ SET IDENTITY_INSERT dbo.[Payments] OFF;
+ SET IDENTITY_INSERT dbo.[AuditLogs] OFF;
+ THROW;
+END CATCH;
+GO

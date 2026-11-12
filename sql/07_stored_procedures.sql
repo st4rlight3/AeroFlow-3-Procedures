@@ -6,8 +6,7 @@ CREATE OR ALTER PROCEDURE dbo.sp_GetAvailableSeats @FlightID int AS
 BEGIN
  SET NOCOUNT ON;
  SELECT s.SeatID,s.SeatNumber,s.RowNumber,s.ColumnLetter,s.Cabin,s.SeatFee,s.IsPriority,
- CAST(CASE WHEN a.AssignmentID IS NULL THEN 1 ELSE 0 END AS bit) Available,
- CAST(CASE WHEN a.AssignmentID IS NULL THEN 1 ELSE 0 END AS bit) IsAvailable
+ CAST(CASE WHEN a.AssignmentID IS NULL THEN 1 ELSE 0 END AS bit) AS Available
  FROM dbo.AircraftSeats s JOIN dbo.Flights f ON f.AircraftID=s.AircraftID
  LEFT JOIN dbo.FlightSeatAssignments a ON a.FlightID=f.FlightID AND a.SeatID=s.SeatID AND a.IsActive=1
  WHERE f.FlightID=@FlightID AND s.IsActive=1 ORDER BY s.RowNumber,s.ColumnLetter;

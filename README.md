@@ -21,9 +21,20 @@ Nếu chưa hiện phiên bản Python, hoàn tất cài Python rồi mở lại
 
 ## 2. Mở thư mục dự án
 
-Tải mã nguồn bằng **Code → Download ZIP**, giải nén, rồi mở thư mục có `run.py`, `requirements.txt` và thư mục `app`.
+Chọn một trong hai cách tải mã nguồn.
 
-Bấm thanh địa chỉ của File Explorer, gõ `powershell` rồi nhấn Enter. Những lệnh dưới đây đều chạy trong cửa sổ này. Mỗi dòng là một lệnh riêng; chờ chạy xong rồi nhập dòng tiếp theo.
+**Dùng Git.** Sau khi cài [Git for Windows](https://git-scm.com/install/windows), mở PowerShell tại thư mục muốn lưu dự án. Chạy lần lượt:
+
+```powershell
+git clone https://github.com/st4rlight3/AeroFlow-3-Procedures.git
+cd AeroFlow-3-Procedures
+```
+
+Lệnh đầu tải mã nguồn vào thư mục `AeroFlow-3-Procedures`. Lệnh sau mở thư mục đó trong PowerShell. Tiếp tục bước 3 ngay trong cửa sổ này.
+
+**Tải ZIP.** Trên trang GitHub, chọn **Code → Download ZIP**. Giải nén, rồi mở thư mục có `run.py`, `requirements.txt` và thư mục `app`.
+
+Bấm thanh địa chỉ của File Explorer, gõ `powershell` rồi nhấn Enter. Chạy các lệnh ở bước tiếp theo trong cửa sổ PowerShell. Nhập từng dòng và chờ chạy xong trước khi nhập dòng kế tiếp.
 
 ## 3. Cài thư viện và tạo cấu hình
 
